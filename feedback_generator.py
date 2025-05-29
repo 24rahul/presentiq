@@ -133,12 +133,23 @@ class FeedbackGenerator:
             )
             
             # Parse the response
-            feedback_text = response.choices[0].message.content
+            feedback_text = response.choices[0].message.content.strip()
             
-            # Try to parse as JSON, fall back to structured text if needed
+            # Clean up the response - remove markdown formatting if present
+            if feedback_text.startswith('```json'):
+                feedback_text = feedback_text.replace('```json', '').replace('```', '').strip()
+            elif feedback_text.startswith('```'):
+                feedback_text = feedback_text.replace('```', '').strip()
+            
+            # Try to parse as JSON with improved error handling
             try:
                 feedback = json.loads(feedback_text)
-            except json.JSONDecodeError:
+                
+                # Validate and clean the feedback structure
+                feedback = self._validate_and_clean_feedback(feedback)
+                
+            except json.JSONDecodeError as e:
+                st.warning(f"AI returned non-JSON response. Attempting to parse structured text...")
                 feedback = self._parse_unstructured_feedback(feedback_text)
             
             # Add service context to feedback
@@ -160,6 +171,7 @@ CRITICAL INSTRUCTIONS:
 2. Focus on MEDICAL CONTENT, CLINICAL REASONING, and PRESENTATION STRUCTURE
 3. Do NOT penalize for transcription artifacts like "um," repeated words, or minor speech-to-text errors
 4. Evaluate as if you heard this presentation live during rounds
+5. ALWAYS respond with valid JSON format - no additional text before or after the JSON
 
 SERVICE CONTEXT: {service_context['name']}
 SPECIALTY: {service_context['specialty']}
@@ -168,40 +180,55 @@ COMMON PRESENTATIONS: {service_context['common_presentations']}
 SERVICE EXPECTATIONS: {service_context['expectations']}
 
 EVALUATION CRITERIA:
-1. **Clinical Content (40%)**:
-   - Accuracy of medical information and terminology
-   - Appropriate differential diagnosis for {service_context['specialty']}
-   - Relevant history taking for {service_context['name']}
-   - Service-appropriate physical exam elements
+1. **Clinical Content (40%)** - Analyze in detail:
+   - Medical terminology accuracy and appropriate usage
+   - Completeness and relevance of history of present illness
+   - Appropriateness of past medical history, medications, allergies
+   - Physical examination findings and their clinical significance
+   - Differential diagnosis breadth and appropriateness for {service_context['specialty']}
+   - Understanding of disease pathophysiology and clinical manifestations
+   - Service-specific knowledge relevant to {service_context['name']}
 
-2. **Clinical Reasoning (30%)**:
-   - Logical diagnostic approach
-   - Risk stratification appropriate for the service
-   - Evidence-based management plans
-   - Understanding of service-specific protocols
+2. **Clinical Reasoning (30%)** - Evaluate thoroughly:
+   - Logical progression from symptoms to differential diagnosis
+   - Risk stratification and severity assessment
+   - Evidence-based diagnostic approach and test selection
+   - Treatment plan rationale and appropriateness
+   - Understanding of prognosis and follow-up needs
+   - Integration of patient factors (comorbidities, social determinants)
+   - Service-specific protocols and guidelines application
 
-3. **Presentation Structure (20%)**:
-   - Organized flow of information
-   - Inclusion of essential elements: {', '.join(service_context['key_elements'])}
-   - Efficient communication for busy rounds
+3. **Presentation Structure (20%)** - Assess comprehensively:
+   - Logical organization and flow of information
+   - Inclusion of all required elements: {', '.join(service_context['key_elements'])}
+   - Efficiency and conciseness appropriate for rounds
+   - Clear communication of key clinical points
+   - Appropriate emphasis on critical findings
+   - Professional presentation style and confidence
 
 4. **Professionalism (10%)**:
    - Confident delivery (accounting for transcription limitations)
    - Appropriate medical language
    - Patient-centered approach
 
-RESPONSE FORMAT - Return valid JSON:
+RESPONSE FORMAT - Return ONLY valid JSON (no markdown, no additional text):
 {{
-    "overall_score": "Numeric score 1-10",
+    "overall_score": 6,
     "overall_assessment": "2-3 sentence summary focusing on clinical strengths and areas for improvement",
-    "clinical_content": "Detailed feedback on medical accuracy, appropriate for {service_context['name']} context",
-    "clinical_reasoning": "Evaluation of diagnostic thinking and management planning",
-    "presentation_structure": "Assessment of organization and completeness for rounds presentation",
-    "service_specific_feedback": "Feedback specific to {service_context['name']} expectations and protocols",
-    "strengths": ["List 3-4 specific clinical and presentation strengths"],
-    "areas_for_improvement": ["List 3-4 specific, actionable recommendations"],
+    "clinical_content": "DETAILED 4-6 sentence analysis of medical accuracy, terminology usage, differential diagnosis appropriateness, history-taking completeness, physical exam relevance, and service-specific clinical knowledge. Include specific examples from the presentation.",
+    "clinical_reasoning": "DETAILED 4-6 sentence evaluation of diagnostic thinking process, risk stratification, evidence-based decision making, understanding of pathophysiology, logical flow from symptoms to diagnosis to treatment, and service-specific protocols. Cite specific reasoning examples.",
+    "presentation_structure": "DETAILED 4-6 sentence assessment of information organization, inclusion of required elements, efficiency for rounds setting, logical flow, completeness of case presentation, and communication clarity. Reference specific structural strengths and gaps.",
+    "service_specific_feedback": "DETAILED 3-4 sentence feedback specific to {service_context['name']} expectations, protocols, and standards",
+    "strengths": ["List 3-4 specific clinical and presentation strengths with examples"],
+    "areas_for_improvement": ["List 3-4 specific, actionable recommendations with examples"],
     "teaching_points": ["Key learning points or clinical pearls relevant to this case and {service_context['specialty']}"]
 }}
+
+CRITICAL REQUIREMENTS:
+- Each feedback section (clinical_content, clinical_reasoning, presentation_structure) must be 4-6 detailed sentences with specific examples from the presentation
+- The overall_score must be an integer from 1-10 (not a string or fraction)
+- Return ONLY the JSON object, no markdown formatting or additional text
+- Ensure all JSON strings are properly escaped
 
 Be constructive, specific, and focused on helping the student improve their clinical presentation skills for {service_context['specialty']} rotations, specifically {service_context['name']}."""
 
@@ -288,4 +315,60 @@ Provide specific, actionable feedback that will help this student excel on their
     def get_service_description(self, service: str) -> str:
         """Get description for a service"""
         context = self.service_contexts.get(service, {})
-        return f"**Focus:** {context.get('focus', 'General medical care')}\n**Common Cases:** {context.get('common_presentations', 'Various medical conditions')}" 
+        return f"**Focus:** {context.get('focus', 'General medical care')}\n**Common Cases:** {context.get('common_presentations', 'Various medical conditions')}"
+
+    def _validate_and_clean_feedback(self, feedback: Dict[str, Any]) -> Dict[str, Any]:
+        """Validate and clean the feedback structure"""
+        
+        # Ensure overall_score is an integer
+        if 'overall_score' in feedback:
+            try:
+                # Handle various score formats
+                score_value = feedback['overall_score']
+                if isinstance(score_value, str):
+                    # Extract number from strings like "6/10", "6", "6.0"
+                    import re
+                    score_match = re.search(r'(\d+)', score_value)
+                    if score_match:
+                        feedback['overall_score'] = int(score_match.group(1))
+                    else:
+                        feedback['overall_score'] = 7  # Default fallback
+                elif isinstance(score_value, float):
+                    feedback['overall_score'] = int(score_value)
+                elif not isinstance(score_value, int):
+                    feedback['overall_score'] = 7  # Default fallback
+                    
+                # Ensure score is within valid range
+                if feedback['overall_score'] < 1:
+                    feedback['overall_score'] = 1
+                elif feedback['overall_score'] > 10:
+                    feedback['overall_score'] = 10
+                    
+            except (ValueError, TypeError):
+                feedback['overall_score'] = 7  # Default fallback
+        else:
+            feedback['overall_score'] = 7  # Default if missing
+        
+        # Ensure required fields exist with defaults
+        required_fields = {
+            'overall_assessment': 'Assessment not provided.',
+            'clinical_content': 'Clinical content feedback not provided.',
+            'clinical_reasoning': 'Clinical reasoning feedback not provided.',
+            'presentation_structure': 'Presentation structure feedback not provided.',
+            'service_specific_feedback': 'Service-specific feedback not provided.',
+            'strengths': [],
+            'areas_for_improvement': [],
+            'teaching_points': []
+        }
+        
+        for field, default_value in required_fields.items():
+            if field not in feedback or not feedback[field]:
+                feedback[field] = default_value
+        
+        # Ensure list fields are actually lists
+        list_fields = ['strengths', 'areas_for_improvement', 'teaching_points']
+        for field in list_fields:
+            if not isinstance(feedback[field], list):
+                feedback[field] = [str(feedback[field])] if feedback[field] else []
+        
+        return feedback 
