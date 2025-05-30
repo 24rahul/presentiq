@@ -4,9 +4,9 @@
 ![Python](https://img.shields.io/badge/Python-3.8+-brightgreen.svg)
 ![Streamlit](https://img.shields.io/badge/Streamlit-Web%20App-red.svg)
 
-**Developed by Rahul Gorijavolu, Johns Hopkins University School of Medicine**
+**Created by Rahul Gorijavolu and Emily Zhao at the Johns Hopkins University School of Medicine**
 
-Advanced AI-powered feedback system for medical student presentations with expert attending-level analysis.
+AI-powered feedback system for medical student presentations with expert attending-level analysis.
 
 ## 🎯 Features
 
@@ -152,7 +152,7 @@ This project is developed for educational purposes at Johns Hopkins University S
 
 For issues or questions:
 - Create GitHub issue
-- Contact: Rahul Gorijavolu, JHUSOM
+- Contact: Rahul Gorijavolu and Emily Zhao, JHUSOM
 
 ## 🙏 Acknowledgments
 
@@ -165,4 +165,4 @@ For issues or questions:
 
 **PresentIQ** - Elevating medical education through intelligent feedback
 
-*Developed by Rahul Gorijavolu, Johns Hopkins University School of Medicine* 
+*Created by Rahul Gorijavolu and Emily Zhao at the Johns Hopkins University School of Medicine* 
