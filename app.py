@@ -115,18 +115,24 @@ with st.sidebar:
         model = st.selectbox("Model", ["gpt-4o", "gpt-4", "gpt-3.5-turbo"])
     else:
         model = st.selectbox("Model", ["grok-3", "grok-2-1212"])
+
+    # Dynamically get all services grouped by specialty
+    feedback_generator_for_services = FeedbackGenerator()
+    services_by_specialty = feedback_generator_for_services.get_service_options()
     
-    # Service selection
+    # Flatten for selectbox with group labels
+    service_options = []
+    service_labels = {}
+    for specialty, services in services_by_specialty.items():
+        for key, name in services.items():
+            label = f"{specialty}: {name}"
+            service_options.append(key)
+            service_labels[key] = label
+    
     service = st.selectbox(
         "Medical Service",
-        [
-            "internal_medicine_hospitalist",
-            "internal_medicine_icu", 
-            "surgery_general",
-            "obgyn_obstetrics",
-            "neurology_general"
-        ],
-        format_func=lambda x: x.replace("_", " ").title()
+        service_options,
+        format_func=lambda x: service_labels.get(x, x.replace("_", " ").title())
     )
 
 # Main interface

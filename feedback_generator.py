@@ -26,7 +26,7 @@ class FeedbackGenerator:
             # Internal Medicine Services
             "internal_medicine_hospitalist": {
                 "specialty": "Internal Medicine",
-                "name": "Internal Medicine - Hospitalist Service",
+                "name": "Hospitalist Service",
                 "focus": "acute medical conditions, chronic disease exacerbations, medication reconciliation, discharge planning, complex medical decision-making",
                 "key_elements": ["chief complaint", "HPI with pertinent positives/negatives", "past medical history", "medications with doses", "allergies", "social history", "family history", "review of systems", "physical exam", "assessment with differential", "plan with rationale"],
                 "common_presentations": "heart failure exacerbations, COPD exacerbations, diabetes management, hypertension crisis, pneumonia, UTIs, sepsis, electrolyte abnormalities, acute kidney injury",
@@ -34,7 +34,7 @@ class FeedbackGenerator:
             },
             "internal_medicine_icu": {
                 "specialty": "Internal Medicine",
-                "name": "Internal Medicine - Medical ICU",
+                "name": "Medical ICU",
                 "focus": "critically ill patients, ventilator management, vasopressor support, multi-organ failure, sedation management",
                 "key_elements": ["chief complaint", "HPI", "past medical history", "medications", "allergies", "physical exam", "ventilator settings", "drips/pressors", "labs/ABG", "assessment", "ICU-specific plan"],
                 "common_presentations": "respiratory failure, septic shock, cardiogenic shock, acute respiratory distress syndrome, overdose, diabetic ketoacidosis, status epilepticus",
@@ -44,7 +44,7 @@ class FeedbackGenerator:
             # Surgery Services
             "surgery_general": {
                 "specialty": "Surgery",
-                "name": "Surgery - General/Acute Care Surgery",
+                "name": "General/Acute Care Surgery",
                 "focus": "emergency surgical conditions, trauma, appendicitis, cholecystitis, bowel obstruction, hernias",
                 "key_elements": ["chief complaint", "HPI", "past surgical history", "medications", "allergies", "physical exam with surgical findings", "imaging results", "labs", "assessment", "surgical vs conservative plan"],
                 "common_presentations": "acute abdomen, appendicitis, cholecystitis, bowel obstruction, hernias, trauma, perforated viscus, GI bleeding",
@@ -52,7 +52,7 @@ class FeedbackGenerator:
             },
             "surgery_transplant": {
                 "specialty": "Surgery",
-                "name": "Surgery - Transplant Surgery", 
+                "name": "Transplant Surgery", 
                 "focus": "organ transplant evaluation, post-transplant care, immunosuppression management, transplant complications",
                 "key_elements": ["chief complaint", "HPI", "transplant history", "immunosuppressive regimen", "rejection history", "infections", "physical exam", "labs including drug levels", "assessment", "plan"],
                 "common_presentations": "transplant evaluation, acute rejection, chronic rejection, post-transplant infections, immunosuppression toxicity, transplant complications",
@@ -60,43 +60,107 @@ class FeedbackGenerator:
             },
             "surgery_oncology": {
                 "specialty": "Surgery", 
-                "name": "Surgery - Surgical Oncology",
+                "name": "Surgical Oncology",
                 "focus": "cancer staging, surgical resection planning, perioperative oncology care, multidisciplinary cancer care",
                 "key_elements": ["chief complaint", "HPI", "oncologic history", "staging", "prior treatments", "performance status", "physical exam", "imaging", "pathology", "assessment", "surgical plan"],
                 "common_presentations": "newly diagnosed cancers, metastatic disease, post-operative complications, cancer recurrence, palliative procedures",
                 "expectations": "cancer staging knowledge, multidisciplinary approach, surgical oncology principles, palliative care integration"
             },
             
-            # OB/GYN Services
+            # OB/GYN Services (expanded)
             "obgyn_obstetrics": {
                 "specialty": "Obstetrics & Gynecology",
-                "name": "OB/GYN - Obstetrics",
-                "focus": "pregnancy care, labor and delivery, pregnancy complications, prenatal care, postpartum care",
-                "key_elements": ["chief complaint", "HPI", "obstetric history (G/P/A)", "LMP/EGA", "prenatal course", "medications", "allergies", "physical exam", "fetal assessment", "assessment", "obstetric plan"],
-                "common_presentations": "pregnancy complications, preterm labor, preeclampsia, gestational diabetes, fetal growth restriction, labor management, postpartum hemorrhage",
-                "expectations": "obstetric history taking, fetal assessment, pregnancy-related physiology, labor management, emergency obstetric care"
+                "name": "Obstetrics",
+                "focus": "pregnancy management, prenatal care, labor and delivery, high-risk pregnancy",
+                "key_elements": ["chief complaint", "HPI", "obstetric history", "pregnancy status", "medical history", "physical exam", "imaging/labs", "assessment", "obstetric plan"],
+                "common_presentations": "preterm labor, preeclampsia, gestational diabetes, fetal anomalies, multiple gestation, high-risk pregnancy",
+                "expectations": "risk assessment, fetal monitoring, labor management, complication prevention"
             },
             "obgyn_gynecology": {
-                "specialty": "Obstetrics & Gynecology", 
-                "name": "OB/GYN - Gynecology",
+                "specialty": "Obstetrics & Gynecology",
+                "name": "Gynecology",
                 "focus": "gynecologic conditions, reproductive health, contraception, gynecologic surgery, reproductive endocrinology",
                 "key_elements": ["chief complaint", "HPI", "gynecologic history", "menstrual history", "sexual history", "contraceptive use", "pap history", "physical exam", "pelvic exam", "assessment", "plan"],
                 "common_presentations": "abnormal uterine bleeding, pelvic pain, contraception counseling, STI screening, gynecologic cancers, infertility, menopause",
                 "expectations": "reproductive health knowledge, gynecologic exam skills, contraceptive counseling, cancer screening protocols"
             },
+            "obgyn_reproductive_endocrinology": {
+                "specialty": "Obstetrics & Gynecology",
+                "name": "Reproductive Endocrinology and Infertility",
+                "focus": "evaluation and management of infertility, reproductive hormone disorders, assisted reproductive technologies, polycystic ovary syndrome, amenorrhea, recurrent pregnancy loss",
+                "key_elements": ["chief complaint", "HPI", "reproductive history", "menstrual history", "fertility history", "hormonal evaluation", "physical exam", "imaging/labs", "assessment", "plan"],
+                "common_presentations": "infertility, PCOS, amenorrhea, hyperprolactinemia, recurrent miscarriage, ovulation disorders, endometriosis",
+                "expectations": "detailed reproductive history, understanding of infertility workup, hormonal evaluation, knowledge of ART options"
+            },
+            "obgyn_gynecologic_oncology": {
+                "specialty": "Obstetrics & Gynecology",
+                "name": "Gynecology and Oncology",
+                "focus": "diagnosis and management of gynecologic cancers, cancer screening, surgical and medical oncology, palliative care integration",
+                "key_elements": ["chief complaint", "HPI", "oncologic history", "cancer screening history", "physical exam", "pelvic exam", "imaging/pathology", "staging", "assessment", "oncology plan"],
+                "common_presentations": "ovarian cancer, endometrial cancer, cervical cancer, vulvar/vaginal cancers, abnormal pap smears, post-treatment surveillance",
+                "expectations": "cancer staging, multidisciplinary care, surgical and medical oncology principles, palliative care awareness"
+            },
+            "obgyn_mfm": {
+                "specialty": "Obstetrics & Gynecology",
+                "name": "Maternal-Fetal Medicine",
+                "focus": "high-risk pregnancy management, prenatal diagnosis, maternal and fetal complications, perinatal care",
+                "key_elements": ["chief complaint", "HPI", "obstetric history (G/P/A)", "maternal risk factors", "fetal assessment", "imaging/labs", "physical exam", "assessment", "MFM-specific plan"],
+                "common_presentations": "preterm labor, preeclampsia, gestational diabetes, fetal anomalies, multiple gestation, maternal comorbidities",
+                "expectations": "risk stratification, high-risk pregnancy protocols, maternal and fetal monitoring, multidisciplinary coordination"
+            },
+            "obgyn_complex_family_planning": {
+                "specialty": "Obstetrics & Gynecology",
+                "name": "Complex Family Planning",
+                "focus": "contraceptive counseling for complex cases, abortion care, management of medically complicated pregnancies, reproductive rights and ethics",
+                "key_elements": ["chief complaint", "HPI", "contraceptive history", "medical/surgical history", "risk assessment", "counseling documentation", "physical exam", "assessment", "family planning plan"],
+                "common_presentations": "contraceptive needs in complex medical conditions, abortion care, pregnancy options counseling, post-abortion care",
+                "expectations": "comprehensive counseling, ethical considerations, risk assessment, knowledge of complex contraception and abortion protocols"
+            },
+            "obgyn_minimally_invasive_surgery": {
+                "specialty": "Obstetrics & Gynecology",
+                "name": "Minimally Invasive Gynecologic Surgery",
+                "focus": "laparoscopic and hysteroscopic procedures, surgical management of benign gynecologic conditions, perioperative care",
+                "key_elements": ["chief complaint", "HPI", "surgical history", "indication for surgery", "preoperative assessment", "physical exam", "imaging/labs", "operative findings", "postoperative plan"],
+                "common_presentations": "fibroids, endometriosis, ovarian cysts, abnormal uterine bleeding, pelvic pain, minimally invasive hysterectomy",
+                "expectations": "knowledge of minimally invasive techniques, perioperative management, surgical indications, complication prevention"
+            },
+            "obgyn_urogynecology": {
+                "specialty": "Obstetrics & Gynecology",
+                "name": "Urogynecology",
+                "focus": "pelvic floor disorders, urinary incontinence, pelvic organ prolapse, reconstructive pelvic surgery",
+                "key_elements": ["chief complaint", "HPI", "urogynecologic history", "urinary/bowel symptoms", "physical exam", "pelvic floor assessment", "imaging/labs", "assessment", "urogynecology plan"],
+                "common_presentations": "urinary incontinence, pelvic organ prolapse, voiding dysfunction, recurrent UTIs, pelvic pain",
+                "expectations": "detailed pelvic floor exam, knowledge of incontinence and prolapse management, surgical and non-surgical options"
+            },
             
-            # Neurology Services
-            "neurology_general": {
+            # Neurology Services (expanded)
+            "neurology_adult_general": {
                 "specialty": "Neurology",
-                "name": "Neurology - General Neurology",
-                "focus": "neurological conditions, seizure disorders, headaches, movement disorders, neuropathy, dementia",
+                "name": "Adult General",
+                "focus": "adult neurological disorders, seizure disorders, headaches, neuropathy, movement disorders, dementia",
                 "key_elements": ["chief complaint", "HPI with neurologic timeline", "past medical history", "medications", "neurologic exam", "mental status", "cranial nerves", "motor/sensory exam", "coordination", "gait", "assessment with localization", "plan"],
-                "common_presentations": "seizures, headaches, altered mental status, movement disorders, neuropathy, dementia, multiple sclerosis, Parkinson's disease",
-                "expectations": "detailed neurologic exam, anatomic localization, neurologic differential diagnosis, understanding of neuroimaging"
+                "common_presentations": "seizures, headaches, neuropathy, Parkinson's disease, dementia, multiple sclerosis, myasthenia gravis",
+                "expectations": "detailed neurologic exam, anatomic localization, broad differential diagnosis, adult neurology protocols"
+            },
+            "neurology_pediatric_general": {
+                "specialty": "Neurology",
+                "name": "Pediatric General",
+                "focus": "pediatric neurological disorders, developmental delay, epilepsy, neuromuscular disorders, neurogenetic conditions",
+                "key_elements": ["chief complaint", "HPI with developmental history", "birth history", "family history", "medications", "neurologic exam", "developmental assessment", "imaging/labs", "assessment", "plan"],
+                "common_presentations": "developmental delay, pediatric seizures, cerebral palsy, muscular dystrophy, neurocutaneous syndromes",
+                "expectations": "age-appropriate neurologic exam, developmental assessment, pediatric neurology knowledge, family-centered care"
+            },
+            "neurology_consults": {
+                "specialty": "Neurology",
+                "name": "Consults",
+                "focus": "inpatient and emergency neurology consultations, acute neurologic presentations, interdisciplinary care",
+                "key_elements": ["consult question", "HPI", "pertinent history", "exam findings", "imaging/labs", "assessment with localization", "consult recommendations", "plan"],
+                "common_presentations": "acute stroke, seizure, altered mental status, neuromuscular emergencies, diagnostic dilemmas",
+                "expectations": "focused consult assessment, rapid neurologic evaluation, clear recommendations, interdisciplinary communication"
             },
             "neurology_stroke": {
                 "specialty": "Neurology",
-                "name": "Neurology - Stroke Team",
+                "name": "Stroke Team",
                 "focus": "acute stroke care, TIA evaluation, stroke prevention, thrombolysis, thrombectomy, stroke rehabilitation",
                 "key_elements": ["chief complaint", "HPI with time of onset", "past medical history", "medications", "NIHSS", "neurologic exam", "imaging review", "assessment with stroke type", "acute stroke plan"],
                 "common_presentations": "acute stroke, TIA, intracerebral hemorrhage, subarachnoid hemorrhage, stroke in evolution, post-stroke complications",
@@ -104,11 +168,19 @@ class FeedbackGenerator:
             },
             "neurology_icu": {
                 "specialty": "Neurology",
-                "name": "Neurology - Neurocritical Care",
+                "name": "Neurocritical Care Unit",
                 "focus": "critically ill neurologic patients, intracranial pressure management, status epilepticus, brain death evaluation",
                 "key_elements": ["chief complaint", "HPI", "neurologic history", "medications", "neuro exam", "ICP monitoring", "ventilator settings", "imaging", "EEG results", "assessment", "neuro-ICU plan"],
                 "common_presentations": "status epilepticus, traumatic brain injury, subarachnoid hemorrhage, brain death evaluation, post-operative neurosurgical patients",
                 "expectations": "neurocritical care principles, ICP management, seizure management, neurologic monitoring, brain death protocols"
+            },
+            "neurology_outpatient": {
+                "specialty": "Neurology",
+                "name": "Outpatient",
+                "focus": "chronic neurologic disease management, follow-up care, ambulatory neurology, patient education",
+                "key_elements": ["chief complaint", "HPI", "chronic disease history", "medications", "neurologic exam", "functional assessment", "imaging/labs", "assessment", "outpatient plan"],
+                "common_presentations": "chronic headache, epilepsy follow-up, neuropathy, multiple sclerosis, movement disorders, memory complaints",
+                "expectations": "continuity of care, chronic disease management, patient education, outpatient neurology protocols"
             }
         }
         
@@ -169,7 +241,7 @@ class FeedbackGenerator:
 CRITICAL INSTRUCTIONS:
 1. This is a TRANSCRIBED SPEECH presentation - ignore minor transcription errors, grammatical issues, or filler words
 2. Focus on MEDICAL CONTENT, CLINICAL REASONING, and PRESENTATION STRUCTURE
-3. Do NOT penalize for transcription artifacts like "um," repeated words, or minor speech-to-text errors
+3. Do NOT penalize for transcription artifacts or speech-to-text errors
 4. Evaluate as if you heard this presentation live during rounds
 5. ALWAYS respond with valid JSON format - no additional text before or after the JSON
 
