@@ -25,9 +25,77 @@ Seven specialized agents evaluate different dimensions of the presentation:
 | **Clinical Reasoning** | Differential dx, summary statement, plan coherence, data selectivity |
 | **Structure & Delivery** | Format conformance, semantic density (time allocation vs. clinical relevance) |
 | **Communication & Professionalism** | Audience adaptation, patient-centered language |
-| **Anticipatory Reasoning** *(experimental)* | Attending inner monologue — what an attending thinks as they listen |
+| **Anticipatory Reasoning** *(experimental)* | Attending inner monologue -- what an attending thinks as they listen |
 | **Literature & Learning** | Case-specific teaching points and suggested reading |
 | **Attending Synthesizer** | Combines all agent outputs into cohesive feedback |
+
+### Pipeline Flow
+
+```
+                        Audio Input
+                            |
+                    [Whisper Transcription]
+                            |
+                      Raw Transcript
+                            |
+                 +-----------------------+
+                 |  1. Transcription QA  |  Clean speech-to-text artifacts,
+                 |                       |  flag unclear segments
+                 +-----------------------+
+                            |
+                    Cleaned Transcript
+                            |
+                 +-----------------------+
+                 |  2. Clinical Content  |  Medical accuracy, completeness,
+                 |                       |  service-specific knowledge
+                 +-----------------------+
+                            |
+                 +-----------------------+
+                 | 3. Clinical Reasoning |  Differential dx, summary statement,
+                 |                       |  plan coherence, data selectivity
+                 +-----------------------+
+                            |
+              +-------------+-------------+
+              |                           |
+   +---------------------+   +-------------------------+
+   | 4a. Structure &     |   | 4b. Communication &     |
+   |     Delivery        |   |     Professionalism     |
+   |                     |   |                         |   Run in
+   | Format conformance, |   | Audience adaptation,    |   PARALLEL
+   | semantic density    |   | patient-centered lang.  |
+   +---------------------+   +-------------------------+
+              |                           |
+              +-------------+-------------+
+                            |
+              +----------------------------+
+              | 5. Anticipatory Reasoning  |  (optional / experimental)
+              |                            |  Attending inner monologue --
+              | What an attending thinks   |  real-time cognitive walkthrough
+              | at each point              |
+              +----------------------------+
+                            |
+              +----------------------------+
+              | 6. Literature & Learning   |  Case-specific teaching points,
+              |                            |  suggested reading
+              +----------------------------+
+                            |
+        All agent results collected
+                            |
+              +----------------------------+
+              | 7. Attending Synthesizer   |  Weighted synthesis into
+              |                            |  cohesive attending-level
+              | Content  30%  Reasoning 30%|  feedback report
+              | Structure 20% Comm.    10% |
+              | Anticipatory           10% |
+              +----------------------------+
+                            |
+                   Final Feedback Report
+                  (tabs + downloadable)
+```
+
+Agents 1-3 run **sequentially** because each depends on the previous output.
+Agents 4a and 4b run **in parallel** (ThreadPoolExecutor) since they are independent.
+Agent 5 is **optional** (toggled in sidebar). Agents 6-7 always run last.
 
 ### Presentation Format Types
 Select the type of presentation you are giving for format-specific evaluation:
