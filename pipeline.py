@@ -31,12 +31,10 @@ from agents.literature_learning import LiteratureLearningAgent
 from agents.synthesizer import SynthesizerAgent
 
 
-# Load presentation formats config
 _FORMATS_PATH = Path(__file__).parent / "configs" / "presentation_formats.yaml"
 
 
 def load_presentation_formats() -> Dict[str, Any]:
-    """Load presentation format definitions from YAML config."""
     if _FORMATS_PATH.exists():
         with open(_FORMATS_PATH) as f:
             data = yaml.safe_load(f)
@@ -48,8 +46,6 @@ PRESENTATION_FORMATS = load_presentation_formats()
 
 
 class FeedbackPipeline:
-    """Orchestrates the multi-agent evaluation pipeline."""
-
     def __init__(self, provider: str = "OpenAI"):
         self.provider = provider
 
@@ -65,7 +61,6 @@ class FeedbackPipeline:
 
         self.temperature = float(os.getenv("FEEDBACK_TEMPERATURE", "0.3"))
 
-        # Initialize all agents
         kwargs = dict(client=self.client, model=self.model, temperature=self.temperature)
         self.transcription_qa = TranscriptionQAAgent(**kwargs)
         self.clinical_content = ClinicalContentAgent(**kwargs)
@@ -85,16 +80,6 @@ class FeedbackPipeline:
         enable_anticipatory: bool = True,
         progress_callback: Optional[callable] = None,
     ) -> Dict[str, Any]:
-        """Run the full evaluation pipeline.
-
-        Args:
-            transcript: Raw transcript text
-            service: Service key (e.g., "internal_medicine_hospitalist")
-            service_contexts: Dict of all service context definitions
-            presentation_format: Format key (e.g., "full_hp", "sbar", "consult")
-            enable_anticipatory: Whether to run the experimental anticipatory agent
-            progress_callback: Optional callable(step_name, step_number, total_steps)
-        """
         service_context = service_contexts.get(
             service, service_contexts.get("internal_medicine_hospitalist", {})
         )
@@ -106,30 +91,25 @@ class FeedbackPipeline:
             if progress_callback:
                 progress_callback(name, step, total_steps)
 
-        # Build shared context
         context = {
             "transcript": transcript,
             "service_context": service_context,
             "format_config": format_config,
         }
 
-        # --- Step 1: Transcription QA ---
         _progress("Cleaning transcription", 1)
         qa_result = self.transcription_qa.run(context)
         context["transcription_qa_result"] = qa_result
         context["cleaned_transcript"] = qa_result.get("cleaned_transcript", transcript)
 
-        # --- Step 2: Clinical Content ---
         _progress("Evaluating clinical content", 2)
         content_result = self.clinical_content.run(context)
         context["clinical_content_result"] = content_result
 
-        # --- Step 3: Clinical Reasoning (with plan coherence) ---
         _progress("Evaluating clinical reasoning", 3)
         reasoning_result = self.clinical_reasoning.run(context)
         context["clinical_reasoning_result"] = reasoning_result
 
-        # --- Step 4a & 4b: Structure + Communication (parallel) ---
         _progress("Evaluating structure and communication", 4)
         with ThreadPoolExecutor(max_workers=2) as executor:
             future_structure = executor.submit(self.structure_delivery.run, context)
@@ -141,7 +121,6 @@ class FeedbackPipeline:
         context["structure_delivery_result"] = structure_result
         context["communication_professionalism_result"] = communication_result
 
-        # --- Step 5: Anticipatory Reasoning (experimental) ---
         if enable_anticipatory:
             _progress("Generating attending inner monologue", 5)
             anticipatory_result = self.anticipatory_reasoning.run(context)
@@ -149,17 +128,14 @@ class FeedbackPipeline:
         else:
             context["anticipatory_reasoning_result"] = {}
 
-        # --- Step 5/6: Literature & Learning ---
         step_num = 6 if enable_anticipatory else 5
         _progress("Identifying teaching points", step_num)
         literature_result = self.literature_learning.run(context)
         context["literature_learning_result"] = literature_result
 
-        # --- Final: Synthesis ---
         _progress("Synthesizing feedback", step_num)
         synthesis = self.synthesizer.run(context)
 
-        # Attach raw agent results for detailed view
         synthesis["_agent_results"] = {
             "transcription_qa": qa_result,
             "clinical_content": content_result,
@@ -170,7 +146,6 @@ class FeedbackPipeline:
             "literature_learning": literature_result,
         }
 
-        # Add service metadata
         synthesis["service"] = service_context.get("name", "Unknown")
         synthesis["specialty"] = service_context.get("specialty", "Unknown")
         synthesis["presentation_format"] = format_config.get("name", "Standard")
@@ -179,5 +154,4 @@ class FeedbackPipeline:
 
 
 def get_format_options() -> Dict[str, str]:
-    """Get presentation format options for UI display."""
     return {key: config["name"] for key, config in PRESENTATION_FORMATS.items()}

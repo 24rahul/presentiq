@@ -3,15 +3,9 @@ from agents.base import BaseAgent
 
 
 class StructureDeliveryAgent(BaseAgent):
-    """Agent 4a: Evaluates presentation structure, format conformance, and
-    semantic density (information efficiency).
-
-    Format-aware: evaluates against the specific presentation format the
-    student selected (Full H&P, SBAR, Consult, Handoff, etc.)
-
-    Semantic density: analyzes whether time/words are allocated proportionally
-    to clinical relevance. Did the student spend too long on irrelevant details
-    and rush through critical findings?
+    """Evaluates structure, format conformance, and semantic density.
+    Format-aware: evaluates against the selected presentation format.
+    Semantic density: checks whether time is allocated proportionally to clinical relevance.
     """
 
     agent_name = "structure_delivery"

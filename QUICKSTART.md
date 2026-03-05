@@ -1,6 +1,6 @@
 # Quick Start Guide
 
-## 🚀 Get Started in 5 Minutes
+## Get Started in 5 Minutes
 
 ### Step 1: Clone/Download the Project
 If you haven't already, download this project to your computer.
@@ -37,39 +37,72 @@ streamlit run app.py
 
 The app will open in your browser at `http://localhost:8501`
 
-## 🎯 How to Use
+## How to Use
 
-### Option 1: Live Recording
-1. Click the "🎤 Live Recording" tab
-2. Click "🔴 Start Recording"
-3. Give your medical presentation
-4. Click "⏹️ Stop Recording"
-5. Review the transcription
-6. Click "Generate Expert Feedback"
+### Step 1: Configure Your Session
+In the sidebar:
+1. Enter your API key(s)
+2. Select your **medical service** (e.g., Internal Medicine: Hospitalist)
+3. Select your **presentation format** (Full H&P, SBAR, Consult, Handoff, Post-Op)
+4. Toggle **Multi-Agent Pipeline** on/off (on by default for detailed analysis)
+5. Toggle **Attending Inner Monologue** on/off (experimental feature)
 
-### Option 2: Upload Audio File
-1. Click the "📁 Upload Audio" tab
-2. Upload your audio file (WAV, MP3, M4A, FLAC)
-3. Review the transcription
-4. Click "Generate Expert Feedback"
+### Step 2: Input Your Presentation
 
-## 📋 What Makes a Good Presentation
+**Option A: Live Recording**
+1. Click the "Record Audio" tab
+2. Record your presentation
+3. Click "Transcribe Audio"
 
-Include these elements for best feedback:
-- **Chief Complaint**: Why is the patient here?
-- **History of Present Illness (HPI)**: Current problem details
-- **Past Medical History**: Relevant previous conditions
-- **Medications & Allergies**: Current medications and known allergies
-- **Physical Exam**: Relevant findings
-- **Assessment**: Your clinical impression
-- **Differential Diagnosis**: What else could it be?
-- **Plan**: Your treatment/workup plan
+**Option B: Upload Audio File**
+1. Click the "Upload File" tab
+2. Upload your audio file (WAV, MP3, M4A, FLAC, OGG)
+3. Click "Transcribe Audio"
 
-## 🎭 Example Presentation
+### Step 3: Review & Generate Feedback
+1. Review and edit the transcription if needed
+2. Click "Generate Multi-Agent Feedback"
+3. Watch the pipeline progress through each agent
+4. Explore feedback across tabs:
+   - **Overview**: Synthesized assessment, strengths, improvements
+   - **Clinical Reasoning**: Differential dx, plan coherence, data selectivity
+   - **Structure & Efficiency**: Format conformance, semantic density
+   - **Attending Inner Monologue**: What an attending would think at each point
+   - **Teaching Points**: Case-specific pearls and suggested reading
+
+## What Makes a Good Presentation
+
+The expected elements depend on your **presentation format**:
+
+### Full H&P (New Admissions)
+- Chief complaint & HPI, PMH/PSH, Medications & Allergies
+- Social/Family history, Review of Systems
+- Physical exam, Labs/Imaging
+- Assessment with differential diagnosis, Plan with rationale
+
+### SBAR (Handoffs / Urgent Communication)
+- **Situation**: What is happening right now
+- **Background**: Relevant context
+- **Assessment**: What you think is going on
+- **Recommendation**: What you think should be done
+
+### Consult
+- Clear consult question, brief patient summary
+- Relevant history and workup, what has been done so far
+- Specific question for the consultant
+
+### Handoff (Sign-out)
+- Patient one-liner, active issues and status
+- Anticipatory guidance (if-then statements)
+- To-do items, code status
+
+See the full format definitions in `configs/presentation_formats.yaml`.
+
+## Example Presentation
 
 *"This is a 65-year-old male with a history of hypertension and diabetes who presents to the ED with acute onset chest pain that started 2 hours ago. The pain is substernal, crushing in nature, radiates to his left arm, and is associated with diaphoresis and nausea. He denies shortness of breath or palpitations. On physical exam, he appears diaphoretic and anxious. Vital signs show blood pressure 160/90, heart rate 95, respiratory rate 18, and oxygen saturation 98% on room air. Cardiovascular exam reveals regular rate and rhythm without murmurs. Lungs are clear bilaterally. My assessment is acute coronary syndrome, most likely STEMI versus NSTEMI. Differential diagnosis includes unstable angina, aortic dissection, and pulmonary embolism. My plan is to obtain a 12-lead EKG, chest X-ray, CBC, basic metabolic panel, troponins, PT/PTT, and lipid panel. I will start aspirin, administer oxygen, establish IV access, and prepare for possible cardiac catheterization."*
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
 ### Common Issues:
 
@@ -95,12 +128,10 @@ Include these elements for best feedback:
 - Ensure you have Python 3.8+ installed
 - Make sure your OpenAI API key is valid and has credits
 
-## 🎉 Tips for Best Results
+## Tips for Best Results
 
 1. **Speak Clearly**: Enunciate medical terms carefully
 2. **Good Audio Quality**: Use a quiet environment
 3. **Complete Presentations**: Include all standard elements
 4. **Medical Terminology**: Use proper medical language
 5. **Logical Flow**: Present in a structured order
-
-Happy practicing! 🩺 

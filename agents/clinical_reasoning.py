@@ -3,11 +3,8 @@ from agents.base import BaseAgent
 
 
 class ClinicalReasoningAgent(BaseAgent):
-    """Agent 3: Evaluates diagnostic thinking, plan rationale, and whether the
+    """Evaluates diagnostic thinking, plan rationale, and whether the
     presented information coherently supports the plan.
-
-    Includes plan coherence check: does what was presented actually inform
-    and justify the proposed plan? Or is there a disconnect?
     """
 
     agent_name = "clinical_reasoning"

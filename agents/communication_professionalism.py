@@ -3,13 +3,6 @@ from agents.base import BaseAgent
 
 
 class CommunicationProfessionalismAgent(BaseAgent):
-    """Agent 4b: Evaluates communication quality and professionalism.
-
-    Runs in parallel with StructureDeliveryAgent.
-    Focuses on audience adaptation, patient-centered language, and
-    professional communication standards.
-    """
-
     agent_name = "communication_professionalism"
     agent_description = "Communication quality and professionalism evaluation"
 

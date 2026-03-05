@@ -3,11 +3,8 @@ from agents.base import BaseAgent
 
 
 class TranscriptionQAAgent(BaseAgent):
-    """Agent 1: Cleans transcription artifacts while preserving medical content.
-
-    This agent does NOT alter the meaning — it fixes obvious speech-to-text
-    errors (e.g., 'hyper tension' -> 'hypertension') and flags low-confidence
-    segments without changing the student's words or reasoning.
+    """Cleans transcription artifacts while preserving medical content.
+    Fixes speech-to-text errors without altering meaning or reasoning.
     """
 
     agent_name = "transcription_qa"

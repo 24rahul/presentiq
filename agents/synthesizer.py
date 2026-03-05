@@ -3,14 +3,8 @@ from agents.base import BaseAgent
 
 
 class SynthesizerAgent(BaseAgent):
-    """Agent 7: The Attending Synthesizer.
-
-    Takes all agent outputs and produces a cohesive, unified feedback report
-    that reads like feedback from a single experienced attending — not a
-    concatenation of separate analyses.
-
-    Resolves conflicts between agents, prioritizes the most important
-    feedback, and ensures actionable takeaways.
+    """Combines all agent outputs into a cohesive feedback report that reads
+    like it comes from a single attending, not a committee.
     """
 
     agent_name = "synthesizer"
@@ -91,7 +85,6 @@ The overall_score must be an integer 1-10. Be honest but constructive."""
         return result
 
     def _compile_agent_summaries(self, content, reasoning, structure, communication, anticipatory, literature) -> str:
-        """Format all agent results into a readable summary for the synthesizer."""
         sections = []
 
         if content:
@@ -143,7 +136,6 @@ Suggested reading: {', '.join(literature.get('suggested_reading', [])) or 'None'
         return "\n\n".join(sections)
 
     def _clean_score(self, score) -> int:
-        """Ensure score is a valid integer 1-10."""
         try:
             if isinstance(score, str):
                 import re
@@ -155,7 +147,6 @@ Suggested reading: {', '.join(literature.get('suggested_reading', [])) or 'None'
             return 7
 
     def _create_fallback_synthesis(self, content, reasoning, structure, communication, error) -> Dict[str, Any]:
-        """Create a basic synthesis if the LLM call fails."""
         scores = []
         for r in [content, reasoning, structure, communication]:
             if r and isinstance(r.get("score"), (int, float)) and r["score"] > 0:

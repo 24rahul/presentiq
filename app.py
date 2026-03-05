@@ -8,17 +8,14 @@ from feedback_generator import FeedbackGenerator
 from pipeline import FeedbackPipeline, get_format_options
 from simple_recorder import audio_recorder_component
 
-# Load environment variables
 load_dotenv()
 
-# Configure page
 st.set_page_config(
     page_title="PresentIQ - Medical Presentation Feedback",
     page_icon="🧠",
     layout="wide"
 )
 
-# Initialize session state
 if 'transcription' not in st.session_state:
     st.session_state.transcription = None
 if 'edited_transcription' not in st.session_state:
@@ -34,7 +31,6 @@ if 'processing_feedback' not in st.session_state:
 if 'pipeline_step' not in st.session_state:
     st.session_state.pipeline_step = ""
 
-# Simple CSS
 st.markdown("""
 <style>
     .stButton > button {
@@ -89,7 +85,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 def transcribe_audio(file_path, api_key):
-    """Transcribe audio using OpenAI Whisper"""
     client = openai.OpenAI(api_key=api_key)
     with open(file_path, "rb") as audio_file:
         transcript = client.audio.transcriptions.create(
@@ -98,16 +93,13 @@ def transcribe_audio(file_path, api_key):
         )
     return transcript.text
 
-# Title
 st.title("🧠 PresentIQ")
 st.subheader("Medical Presentation Feedback System")
 st.caption("Created by Rahul Gorijavolu and Emily Zhao at the Johns Hopkins University School of Medicine")
 
-# Sidebar for configuration
 with st.sidebar:
     st.header("Configuration")
 
-    # API Keys
     openai_key = st.text_input(
         "OpenAI API Key",
         type="password",
@@ -127,17 +119,14 @@ with st.sidebar:
     else:
         xai_key = None
 
-    # Model selection
     if ai_provider == "OpenAI":
         model = st.selectbox("Model", ["gpt-4o", "gpt-4", "gpt-3.5-turbo"])
     else:
         model = st.selectbox("Model", ["grok-3", "grok-2-1212"])
 
-    # Dynamically get all services grouped by specialty
     feedback_generator_for_services = FeedbackGenerator()
     services_by_specialty = feedback_generator_for_services.get_service_options()
 
-    # Flatten for selectbox with group labels
     service_options = []
     service_labels = {}
     for specialty, services in services_by_specialty.items():
@@ -154,7 +143,6 @@ with st.sidebar:
 
     st.markdown("---")
 
-    # Presentation format selection
     st.subheader("Presentation Format")
     format_options = get_format_options()
     presentation_format = st.selectbox(
@@ -164,7 +152,6 @@ with st.sidebar:
         help="Select the type of presentation you are giving"
     )
 
-    # Show format description
     from pipeline import PRESENTATION_FORMATS
     fmt = PRESENTATION_FORMATS.get(presentation_format, {})
     if fmt:
@@ -173,14 +160,12 @@ with st.sidebar:
 
     st.markdown("---")
 
-    # Pipeline mode toggle
     use_multi_agent = st.toggle(
         "Multi-Agent Pipeline",
         value=True,
         help="Use the multi-agent pipeline for detailed, multi-dimensional feedback. Disable for faster single-prompt feedback."
     )
 
-    # Anticipatory reasoning toggle (only shown in multi-agent mode)
     enable_anticipatory = False
     if use_multi_agent:
         enable_anticipatory = st.toggle(
@@ -189,16 +174,13 @@ with st.sidebar:
             help="Walk through the transcript with annotations of what an attending would be thinking at each point"
         )
 
-# Main interface
 st.markdown("---")
 
-# Check if keys are provided
 if not openai_key:
     st.warning("⚠️ Please provide OpenAI API key in the sidebar to continue")
 elif ai_provider == "xAI (Grok)" and not xai_key:
     st.warning("⚠️ Please provide xAI API key in the sidebar to continue")
 else:
-    # Initialize feedback generator
     try:
         if ai_provider == "OpenAI":
             os.environ["OPENAI_API_KEY"] = openai_key
@@ -206,11 +188,9 @@ else:
             os.environ["XAI_API_KEY"] = xai_key
         os.environ["AI_MODEL"] = model
 
-        # Initialize both old and new systems
         feedback_generator = FeedbackGenerator(provider=ai_provider)
         st.sidebar.success(f"✅ {ai_provider} Ready")
 
-        # Audio input options with tabs
         tab1, tab2 = st.tabs(["🎤 Record Audio", "📁 Upload File"])
 
         audio_file_path = None
@@ -219,7 +199,6 @@ else:
             st.markdown("### Record Your Presentation")
             st.info("💡 **Tip**: Speak clearly and include all required elements for your selected format.")
 
-            # Audio recorder component
             recorded_file = audio_recorder_component()
             if recorded_file and os.path.exists(recorded_file):
                 audio_file_path = recorded_file
@@ -235,7 +214,6 @@ else:
             )
 
             if uploaded_file:
-                # Save uploaded file
                 with tempfile.NamedTemporaryFile(delete=False, suffix=Path(uploaded_file.name).suffix) as tmp_file:
                     tmp_file.write(uploaded_file.getvalue())
                     audio_file_path = tmp_file.name
@@ -243,11 +221,9 @@ else:
 
                 st.success(f"📁 File uploaded: {uploaded_file.name}")
 
-        # Process audio if we have a file
         if st.session_state.current_audio_file and os.path.exists(st.session_state.current_audio_file):
             st.markdown("---")
 
-            # Transcription section
             if not st.session_state.transcription:
                 if st.session_state.processing_transcription:
                     st.info("🔄 Transcribing audio... Please wait.")
@@ -256,7 +232,6 @@ else:
                         st.session_state.processing_transcription = True
                         st.rerun()
 
-                # Handle transcription processing
                 if st.session_state.processing_transcription:
                     try:
                         with st.spinner("🔄 Transcribing audio..."):
@@ -270,14 +245,11 @@ else:
                         st.error(f"❌ Transcription failed: {e}")
                         st.rerun()
 
-            # Show transcription if available
             if st.session_state.transcription:
                 with st.expander("📝 View & Edit Transcription", expanded=True):
-                    # Initialize edited transcription if not set
                     if st.session_state.edited_transcription is None:
                         st.session_state.edited_transcription = st.session_state.transcription
 
-                    # Editable text area
                     edited_text = st.text_area(
                         "Transcribed Text (Editable)",
                         value=st.session_state.edited_transcription,
@@ -286,15 +258,12 @@ else:
                         help="You can edit the transcription to correct any errors before generating feedback."
                     )
 
-                    # Update session state when text changes
                     if edited_text != st.session_state.edited_transcription:
                         st.session_state.edited_transcription = edited_text
-                        # Reset feedback if transcription is edited
                         if st.session_state.feedback:
                             st.session_state.feedback = None
                             st.info("💡 Transcription edited. Please generate feedback again to analyze the updated text.")
 
-                # Feedback generation section
                 if not st.session_state.feedback:
                     if st.session_state.processing_feedback:
                         if use_multi_agent:
@@ -307,13 +276,11 @@ else:
                             st.session_state.processing_feedback = True
                             st.rerun()
 
-                    # Handle feedback processing
                     if st.session_state.processing_feedback:
                         try:
                             text_to_analyze = st.session_state.edited_transcription or st.session_state.transcription
 
                             if use_multi_agent:
-                                # Multi-agent pipeline
                                 pipeline = FeedbackPipeline(provider=ai_provider)
                                 progress_bar = st.progress(0)
                                 status_text = st.empty()
@@ -334,7 +301,6 @@ else:
                                 progress_bar.progress(1.0)
                                 status_text.text("Analysis complete!")
                             else:
-                                # Legacy single-prompt mode
                                 with st.spinner("🧠 Analyzing presentation..."):
                                     feedback = feedback_generator.generate_feedback(text_to_analyze, service)
 
@@ -349,11 +315,9 @@ else:
                             st.error(f"❌ Analysis failed: {e}")
                             st.rerun()
 
-                # Display feedback if available
                 if st.session_state.feedback:
                     feedback = st.session_state.feedback
 
-                    # Score display
                     score = feedback.get('overall_score', 7)
                     if isinstance(score, str):
                         import re
@@ -366,13 +330,11 @@ else:
                     </div>
                     """, unsafe_allow_html=True)
 
-                    # Main feedback tabs
                     if use_multi_agent and "_agent_results" in feedback:
                         _display_multi_agent_feedback(feedback)
                     else:
                         _display_legacy_feedback(feedback)
 
-                    # Download report
                     if st.button("📄 Download Report", use_container_width=True, key="download_btn"):
                         report = _generate_report(feedback, ai_provider, model, service,
                                                   st.session_state.edited_transcription or st.session_state.transcription)
@@ -384,16 +346,13 @@ else:
                             key="download_report_btn"
                         )
 
-                # Reset button
                 if st.button("🔄 Start Over", use_container_width=True, key="reset_btn"):
-                    # Clean up files
                     if st.session_state.current_audio_file and os.path.exists(st.session_state.current_audio_file):
                         try:
                             os.unlink(st.session_state.current_audio_file)
                         except:
                             pass
 
-                    # Reset session state
                     st.session_state.transcription = None
                     st.session_state.edited_transcription = None
                     st.session_state.feedback = None
@@ -410,10 +369,8 @@ else:
 
 
 def _display_multi_agent_feedback(feedback):
-    """Display the multi-agent pipeline feedback with detailed tabs."""
     agent_results = feedback.get("_agent_results", {})
 
-    # Overview tab + detailed agent tabs
     tab_overview, tab_reasoning, tab_structure, tab_monologue, tab_learning = st.tabs([
         "📋 Overview",
         "🧠 Clinical Reasoning",
@@ -429,37 +386,36 @@ def _display_multi_agent_feedback(feedback):
         col1, col2 = st.columns(2)
 
         with col1:
-            st.subheader("🔬 Clinical Content")
+            st.subheader("Clinical Content")
             st.write(feedback.get('clinical_content', 'No feedback provided.'))
 
             if feedback.get('strengths'):
-                st.subheader("✅ Strengths")
+                st.subheader("Strengths")
                 for strength in feedback['strengths']:
                     st.write(f"• {strength}")
 
         with col2:
-            st.subheader("🧠 Clinical Reasoning")
+            st.subheader("Clinical Reasoning")
             st.write(feedback.get('clinical_reasoning', 'No feedback provided.'))
 
             if feedback.get('areas_for_improvement'):
-                st.subheader("🔧 Areas for Improvement")
+                st.subheader("Areas for Improvement")
                 for area in feedback['areas_for_improvement']:
                     st.write(f"• {area}")
 
-        # Plan coherence and semantic density summaries
         if feedback.get('plan_coherence_summary'):
-            st.subheader("🔗 Plan Coherence")
+            st.subheader("Plan Coherence")
             st.write(feedback['plan_coherence_summary'])
 
         if feedback.get('semantic_density_summary'):
-            st.subheader("⚡ Information Efficiency")
+            st.subheader("Information Efficiency")
             st.write(feedback['semantic_density_summary'])
 
-        st.subheader("💬 Communication & Professionalism")
+        st.subheader("Communication & Professionalism")
         st.write(feedback.get('communication_professionalism', 'No feedback provided.'))
 
         if feedback.get('service_specific_feedback'):
-            st.subheader("🏥 Service-Specific Feedback")
+            st.subheader("Service-Specific Feedback")
             st.write(feedback['service_specific_feedback'])
 
     with tab_reasoning:
@@ -506,10 +462,9 @@ def _display_multi_agent_feedback(feedback):
             st.subheader("Organization & Flow")
             st.write(structure.get("organization_flow", "Not available."))
 
-            # Semantic density detail
             sd = structure.get("semantic_density", {})
             if sd:
-                st.subheader("⚡ Semantic Density / Information Efficiency")
+                st.subheader("Semantic Density / Information Efficiency")
                 st.write(sd.get("analysis", "Not available."))
 
                 efficiency = sd.get("efficiency_rating", "unknown")
@@ -533,7 +488,7 @@ def _display_multi_agent_feedback(feedback):
         monologue = anticipatory.get("inner_monologue", [])
 
         if monologue:
-            st.subheader("💭 What an Attending Would Be Thinking")
+            st.subheader("What an Attending Would Be Thinking")
             st.caption("This experimental feature shows the inner monologue of an experienced attending as they listen to your presentation.")
 
             for entry in monologue:
@@ -555,25 +510,23 @@ def _display_multi_agent_feedback(feedback):
 <strong>Attending thinks:</strong> {entry.get('attending_thought', '')}
 </div>""", unsafe_allow_html=True)
 
-            # Unanswered questions
             unanswered = anticipatory.get("unanswered_questions", [])
             if unanswered:
-                st.subheader("❓ Questions Left Unanswered")
+                st.subheader("Questions Left Unanswered")
                 for q in unanswered:
                     st.write(f"• {q}")
 
-            # Anticipatory performance
             col1, col2 = st.columns(2)
             with col1:
                 strengths = anticipatory.get("anticipatory_strengths", [])
                 if strengths:
-                    st.subheader("✅ Anticipated Well")
+                    st.subheader("Anticipated Well")
                     for s in strengths:
                         st.write(f"• {s}")
             with col2:
                 missed = anticipatory.get("missed_anticipations", [])
                 if missed:
-                    st.subheader("💡 Could Have Anticipated")
+                    st.subheader("Could Have Anticipated")
                     for m in missed:
                         st.write(f"• {m}")
 
@@ -592,7 +545,7 @@ def _display_multi_agent_feedback(feedback):
 
         teaching_points = literature.get("teaching_points", [])
         if teaching_points:
-            st.subheader("📚 Teaching Points")
+            st.subheader("Teaching Points")
             for tp in teaching_points:
                 if isinstance(tp, dict):
                     st.markdown(f"**{tp.get('topic', 'Teaching Point')}**")
@@ -605,11 +558,10 @@ def _display_multi_agent_feedback(feedback):
 
         reading = literature.get("suggested_reading", [])
         if reading:
-            st.subheader("📖 Suggested Reading")
+            st.subheader("Suggested Reading")
             for r in reading:
                 st.write(f"• {r}")
 
-        # Also show synthesized teaching points from overview
         synth_tp = feedback.get("teaching_points", [])
         if synth_tp and synth_tp != teaching_points:
             st.subheader("Key Takeaways")
@@ -618,36 +570,34 @@ def _display_multi_agent_feedback(feedback):
 
 
 def _display_legacy_feedback(feedback):
-    """Display the legacy single-prompt feedback."""
-    st.subheader("📋 Overall Assessment")
+    st.subheader("Overall Assessment")
     st.write(feedback.get('overall_assessment', 'No assessment provided.'))
 
     col1, col2 = st.columns(2)
 
     with col1:
-        st.subheader("🔬 Clinical Content")
+        st.subheader("Clinical Content")
         st.write(feedback.get('clinical_content', 'No feedback provided.'))
 
         if feedback.get('strengths'):
-            st.subheader("✅ Strengths")
+            st.subheader("Strengths")
             for strength in feedback['strengths']:
                 st.write(f"• {strength}")
 
     with col2:
-        st.subheader("🧠 Clinical Reasoning")
+        st.subheader("Clinical Reasoning")
         st.write(feedback.get('clinical_reasoning', 'No feedback provided.'))
 
         if feedback.get('areas_for_improvement'):
-            st.subheader("🔧 Areas for Improvement")
+            st.subheader("Areas for Improvement")
             for area in feedback['areas_for_improvement']:
                 st.write(f"• {area}")
 
-    st.subheader("📊 Presentation Structure")
+    st.subheader("Presentation Structure")
     st.write(feedback.get('presentation_structure', 'No feedback provided.'))
 
 
 def _generate_report(feedback, ai_provider, model, service, transcript_text):
-    """Generate a downloadable text report."""
     report_lines = [
         "PRESENTIQ - MEDICAL PRESENTATION FEEDBACK REPORT",
         "=" * 60,
@@ -701,14 +651,12 @@ def _generate_report(feedback, ai_provider, model, service, transcript_text):
     for area in feedback.get('areas_for_improvement', []):
         report_lines.append(f"• {area}")
 
-    # Teaching points
     tp = feedback.get("teaching_points", [])
     if tp:
         report_lines.extend(["", "TEACHING POINTS:"])
         for point in tp:
             report_lines.append(f"• {point}")
 
-    # Anticipatory reasoning summary
     agent_results = feedback.get("_agent_results", {})
     anticipatory = agent_results.get("anticipatory_reasoning", {})
     if anticipatory.get("overall_impression"):
@@ -735,14 +683,13 @@ def _generate_report(feedback, ai_provider, model, service, transcript_text):
     return "\n".join(report_lines)
 
 
-# Instructions
 st.markdown("---")
 st.markdown("""
-### 📋 How to Use:
+### How to Use
 1. **Configure**: Enter your API keys and select your medical service in the sidebar
 2. **Select Format**: Choose your presentation format (Full H&P, SBAR, Consult, Handoff, etc.)
 3. **Record or Upload**: Use the "Record Audio" tab to record live, or "Upload File" for existing audio
 4. **Transcribe**: Click to convert speech to text
-5. **Analyze**: Generate AI feedback — multi-agent pipeline provides detailed, multi-dimensional analysis
+5. **Analyze**: Generate feedback — the multi-agent pipeline provides detailed, multi-dimensional analysis
 6. **Review**: Explore feedback across tabs including the experimental Attending Inner Monologue
 """)

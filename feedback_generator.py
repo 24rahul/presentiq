@@ -11,8 +11,7 @@ class FeedbackGenerator:
         if provider == "OpenAI":
             self.client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
             self.model = os.getenv("AI_MODEL", "gpt-4")
-        else:  # xAI (Grok)
-            # Use OpenAI client with xAI base URL and API key
+        else:
             self.client = openai.OpenAI(
                 api_key=os.getenv("XAI_API_KEY"),
                 base_url="https://api.x.ai/v1"
@@ -21,9 +20,7 @@ class FeedbackGenerator:
             
         self.temperature = float(os.getenv("FEEDBACK_TEMPERATURE", "0.3"))
         
-        # Service-specific contexts organized by specialty
         self.service_contexts = {
-            # Internal Medicine Services
             "internal_medicine_hospitalist": {
                 "specialty": "Internal Medicine",
                 "name": "Hospitalist Service",
@@ -40,8 +37,6 @@ class FeedbackGenerator:
                 "common_presentations": "respiratory failure, septic shock, cardiogenic shock, acute respiratory distress syndrome, overdose, diabetic ketoacidosis, status epilepticus",
                 "expectations": "critical care reasoning, understanding of ICU interventions, hemodynamic monitoring, ventilator management"
             },
-            
-            # Surgery Services
             "surgery_general": {
                 "specialty": "Surgery",
                 "name": "General/Acute Care Surgery",
@@ -66,8 +61,6 @@ class FeedbackGenerator:
                 "common_presentations": "newly diagnosed cancers, metastatic disease, post-operative complications, cancer recurrence, palliative procedures",
                 "expectations": "cancer staging knowledge, multidisciplinary approach, surgical oncology principles, palliative care integration"
             },
-            
-            # OB/GYN Services (expanded)
             "obgyn_obstetrics": {
                 "specialty": "Obstetrics & Gynecology",
                 "name": "Obstetrics",
@@ -132,8 +125,6 @@ class FeedbackGenerator:
                 "common_presentations": "urinary incontinence, pelvic organ prolapse, voiding dysfunction, recurrent UTIs, pelvic pain",
                 "expectations": "detailed pelvic floor exam, knowledge of incontinence and prolapse management, surgical and non-surgical options"
             },
-            
-            # Neurology Services (expanded)
             "neurology_adult_general": {
                 "specialty": "Neurology",
                 "name": "Adult General",
@@ -185,11 +176,7 @@ class FeedbackGenerator:
         }
         
     def generate_feedback(self, transcription: str, service: str = "internal_medicine_hospitalist") -> Dict[str, Any]:
-        """Generate expert physician feedback on the medical presentation"""
-        
         service_context = self.service_contexts.get(service, self.service_contexts["internal_medicine_hospitalist"])
-        
-        # Create the expert physician prompt
         system_prompt = self._create_system_prompt(service_context)
         user_prompt = self._create_user_prompt(transcription, service_context)
         
@@ -204,27 +191,20 @@ class FeedbackGenerator:
                 max_tokens=2500
             )
             
-            # Parse the response
             feedback_text = response.choices[0].message.content.strip()
-            
-            # Clean up the response - remove markdown formatting if present
+
             if feedback_text.startswith('```json'):
                 feedback_text = feedback_text.replace('```json', '').replace('```', '').strip()
             elif feedback_text.startswith('```'):
                 feedback_text = feedback_text.replace('```', '').strip()
             
-            # Try to parse as JSON with improved error handling
             try:
                 feedback = json.loads(feedback_text)
-                
-                # Validate and clean the feedback structure
                 feedback = self._validate_and_clean_feedback(feedback)
-                
-            except json.JSONDecodeError as e:
+            except json.JSONDecodeError:
                 st.warning(f"AI returned non-JSON response. Attempting to parse structured text...")
                 feedback = self._parse_unstructured_feedback(feedback_text)
             
-            # Add service context to feedback
             feedback['service'] = service_context['name']
             feedback['specialty'] = service_context['specialty']
             
@@ -235,7 +215,6 @@ class FeedbackGenerator:
             return self._create_error_feedback(str(e))
     
     def _create_system_prompt(self, service_context: Dict) -> str:
-        """Create the system prompt for the expert physician"""
         return f"""You are a highly experienced attending physician specializing in {service_context['specialty']} working on the {service_context['name']} with over 20 years of clinical experience and medical education expertise. You are evaluating a medical student's oral presentation during rounds.
 
 CRITICAL INSTRUCTIONS:
@@ -305,7 +284,6 @@ CRITICAL REQUIREMENTS:
 Be constructive, specific, and focused on helping the student improve their clinical presentation skills for {service_context['specialty']} rotations, specifically {service_context['name']}."""
 
     def _create_user_prompt(self, transcription: str, service_context: Dict) -> str:
-        """Create the user prompt with the transcription"""
         return f"""Please evaluate this medical student presentation for {service_context['name']} rounds in the {service_context['specialty']} department.
 
 IMPORTANT: This is a transcribed oral presentation. Focus on the medical content and clinical reasoning, not transcription errors or speech patterns.
@@ -322,9 +300,6 @@ Evaluate this presentation considering:
 Provide specific, actionable feedback that will help this student excel on their {service_context['specialty']} rotation, specifically on the {service_context['name']}."""
 
     def _parse_unstructured_feedback(self, feedback_text: str) -> Dict[str, Any]:
-        """Parse unstructured feedback text into a structured format"""
-        
-        # Basic fallback structure
         feedback = {
             "overall_score": 7,
             "overall_assessment": "",
@@ -337,7 +312,6 @@ Provide specific, actionable feedback that will help this student excel on their
             "teaching_points": []
         }
         
-        # Try to extract sections based on common patterns
         sections = feedback_text.split('\n\n')
         
         for i, section in enumerate(sections):
@@ -354,14 +328,12 @@ Provide specific, actionable feedback that will help this student excel on their
             elif 'service' in section_lower or 'specific' in section_lower:
                 feedback["service_specific_feedback"] = section
         
-        # If we couldn't parse sections, put everything in overall assessment
         if not any(feedback[key] for key in ["overall_assessment", "clinical_content", "clinical_reasoning"]):
             feedback["overall_assessment"] = feedback_text
         
         return feedback
     
     def _create_error_feedback(self, error_message: str) -> Dict[str, Any]:
-        """Create error feedback when API call fails"""
         return {
             "overall_score": 0,
             "overall_assessment": f"Unable to generate feedback due to an error: {error_message}",
@@ -375,7 +347,6 @@ Provide specific, actionable feedback that will help this student excel on their
         }
     
     def get_service_options(self) -> Dict[str, Dict[str, str]]:
-        """Get available service options organized by specialty"""
         services_by_specialty = {}
         for key, context in self.service_contexts.items():
             specialty = context['specialty']
@@ -385,43 +356,35 @@ Provide specific, actionable feedback that will help this student excel on their
         return services_by_specialty
     
     def get_service_description(self, service: str) -> str:
-        """Get description for a service"""
         context = self.service_contexts.get(service, {})
         return f"**Focus:** {context.get('focus', 'General medical care')}\n**Common Cases:** {context.get('common_presentations', 'Various medical conditions')}"
 
     def _validate_and_clean_feedback(self, feedback: Dict[str, Any]) -> Dict[str, Any]:
-        """Validate and clean the feedback structure"""
-        
-        # Ensure overall_score is an integer
         if 'overall_score' in feedback:
             try:
-                # Handle various score formats
                 score_value = feedback['overall_score']
                 if isinstance(score_value, str):
-                    # Extract number from strings like "6/10", "6", "6.0"
                     import re
                     score_match = re.search(r'(\d+)', score_value)
                     if score_match:
                         feedback['overall_score'] = int(score_match.group(1))
                     else:
-                        feedback['overall_score'] = 7  # Default fallback
+                        feedback['overall_score'] = 7
                 elif isinstance(score_value, float):
                     feedback['overall_score'] = int(score_value)
                 elif not isinstance(score_value, int):
-                    feedback['overall_score'] = 7  # Default fallback
-                    
-                # Ensure score is within valid range
+                    feedback['overall_score'] = 7
+
                 if feedback['overall_score'] < 1:
                     feedback['overall_score'] = 1
                 elif feedback['overall_score'] > 10:
                     feedback['overall_score'] = 10
                     
             except (ValueError, TypeError):
-                feedback['overall_score'] = 7  # Default fallback
+                feedback['overall_score'] = 7
         else:
-            feedback['overall_score'] = 7  # Default if missing
-        
-        # Ensure required fields exist with defaults
+            feedback['overall_score'] = 7
+
         required_fields = {
             'overall_assessment': 'Assessment not provided.',
             'clinical_content': 'Clinical content feedback not provided.',
@@ -437,7 +400,6 @@ Provide specific, actionable feedback that will help this student excel on their
             if field not in feedback or not feedback[field]:
                 feedback[field] = default_value
         
-        # Ensure list fields are actually lists
         list_fields = ['strengths', 'areas_for_improvement', 'teaching_points']
         for field in list_fields:
             if not isinstance(feedback[field], list):

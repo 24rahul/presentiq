@@ -3,12 +3,6 @@ from agents.base import BaseAgent
 
 
 class ClinicalContentAgent(BaseAgent):
-    """Agent 2: Evaluates the medical accuracy and completeness of the presentation.
-
-    Checks terminology, history completeness, physical exam relevance,
-    and service-specific clinical knowledge.
-    """
-
     agent_name = "clinical_content"
     agent_description = "Clinical content accuracy and completeness evaluation"
 

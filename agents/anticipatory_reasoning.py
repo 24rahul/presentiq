@@ -3,16 +3,9 @@ from agents.base import BaseAgent
 
 
 class AnticipatoryReasoningAgent(BaseAgent):
-    """Agent 5 (EXPERIMENTAL): Attending Inner Monologue.
-
-    Walks through the transcript sequentially and annotates what an
-    experienced attending would be THINKING at each point in the
-    presentation. This is novel — no existing evaluation tool does this.
-
-    The output is a running commentary that helps students understand
-    how their presentation lands in the mind of the listener, what
-    questions it raises, what expectations it sets, and where the
-    attending would feel lost, surprised, or satisfied.
+    """Walks through the transcript and annotates what an attending would be
+    thinking at each point. Helps students understand how their presentation
+    lands in the listener's mind.
     """
 
     agent_name = "anticipatory_reasoning"

@@ -3,14 +3,6 @@ from agents.base import BaseAgent
 
 
 class LiteratureLearningAgent(BaseAgent):
-    """Agent 6: Identifies key learning opportunities from the case and
-    provides targeted teaching points.
-
-    In future iterations, this agent will integrate with PubMed and
-    specialty handbooks via RAG. For now, it uses the LLM's medical
-    knowledge to generate relevant teaching points and learning resources.
-    """
-
     agent_name = "literature_learning"
     agent_description = "Teaching points and learning resource identification"
 
