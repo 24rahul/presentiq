@@ -82,11 +82,11 @@ Seven specialized agents evaluate different dimensions of the presentation:
         All agent results collected
                             |
               +----------------------------+
-              | 7. Attending Synthesizer   |  Weighted synthesis into
+              | 7. Attending Synthesizer   |  Holistic synthesis into
               |                            |  cohesive attending-level
-              | Content  30%  Reasoning 30%|  feedback report
-              | Structure 20% Comm.    10% |
-              | Anticipatory           10% |
+              |  Resolves conflicts,       |  feedback report
+              |  prioritizes top 3-4       |
+              |  actionable improvements   |
               +----------------------------+
                             |
                    Final Feedback Report

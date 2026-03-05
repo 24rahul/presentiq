@@ -39,12 +39,7 @@ RULES:
 3. Prioritize the 3-4 MOST IMPORTANT pieces of feedback. Students can't improve everything at once.
 4. Lead with strengths, then constructive feedback.
 5. End with specific, actionable next steps.
-6. The overall score should reflect a weighted assessment:
-   - Clinical Content: 30%
-   - Clinical Reasoning: 30%
-   - Structure & Delivery: 20%
-   - Communication & Professionalism: 10%
-   - Anticipatory Reasoning: 10%
+6. The overall score should reflect your holistic clinical judgment across all dimensions -- do not use a formula or fixed weights. Consider the full picture the way an attending would.
 
 Presentation format: {format_config.get('name', 'Standard')}
 
