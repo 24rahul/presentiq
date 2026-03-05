@@ -6,7 +6,7 @@
 
 **Created by Rahul Gorijavolu and Emily Zhao at the Johns Hopkins University School of Medicine**
 
-AI-powered feedback system for medical student presentations with expert attending-level analysis.
+AI-powered multi-agent feedback system for medical student oral presentations. Uses a pipeline of 7 specialized AI agents to provide attending-level analysis across clinical content, reasoning, structure, communication, and more.
 
 ## 🎯 Features
 
@@ -15,9 +15,32 @@ AI-powered feedback system for medical student presentations with expert attendi
 - **File Upload**: Support for WAV, MP3, M4A, FLAC, OGG (up to 25MB)
 - **Whisper Transcription**: High-accuracy medical speech recognition
 
+### 🤖 Multi-Agent Evaluation Pipeline
+Seven specialized agents evaluate different dimensions of the presentation:
+
+| Agent | What It Evaluates |
+|-------|-------------------|
+| **Transcription QA** | Cleans speech-to-text artifacts, flags unclear segments |
+| **Clinical Content** | Medical accuracy, completeness, service-specific knowledge |
+| **Clinical Reasoning** | Differential dx, summary statement, plan coherence, data selectivity |
+| **Structure & Delivery** | Format conformance, semantic density (time allocation vs. clinical relevance) |
+| **Communication & Professionalism** | Audience adaptation, patient-centered language |
+| **Anticipatory Reasoning** *(experimental)* | Attending inner monologue — what an attending thinks as they listen |
+| **Literature & Learning** | Case-specific teaching points and suggested reading |
+| **Attending Synthesizer** | Combines all agent outputs into cohesive feedback |
+
+### 📋 Presentation Format Types
+Select the type of presentation you are giving for format-specific evaluation:
+- **Full H&P** — New admissions, initial consults
+- **Focused H&P** — Follow-ups, problem-based rounds
+- **SBAR** — Handoffs, urgent communication, calling consults
+- **Consult** — Presenting to a consulting service
+- **Handoff (Sign-out)** — End-of-shift cross-coverage
+- **Post-Operative Update** — Surgical morning rounds
+
 ### 🤖 Dual AI Provider Support
-- **OpenAI**: GPT-4o, GPT-4.1, GPT-4, GPT-3.5-turbo
-- **xAI Grok**: Grok-3, Grok-3-Fast, Grok-2-1212
+- **OpenAI**: GPT-4o, GPT-4, GPT-3.5-turbo
+- **xAI Grok**: Grok-3, Grok-2-1212
 - **Smart API Management**: Automatic key validation and provider switching
 
 ### 🏥 Medical Specialty Focus
@@ -25,10 +48,12 @@ AI-powered feedback system for medical student presentations with expert attendi
 - **Comprehensive Coverage**: Internal Medicine, Surgery, OB/GYN, Neurology
 - **Subspecialty Support**: Detailed service breakdowns
 
-### 📊 Expert Analysis
-- **Performance Scoring**: 1-10 scale with detailed breakdowns
-- **Multi-Dimensional Feedback**: Clinical content, reasoning, structure
-- **Actionable Insights**: Strengths and improvement areas
+### 📊 Analysis Capabilities
+- **Performance Scoring**: 1-10 scale with weighted multi-agent synthesis
+- **Plan Coherence**: Does the presented information logically support the plan?
+- **Semantic Density**: Is time allocated proportionally to clinical relevance?
+- **Attending Inner Monologue**: See what an attending would be thinking at each point
+- **Teaching Points**: Case-specific clinical pearls and suggested reading
 - **Professional Reports**: Downloadable comprehensive analysis
 
 ## 🚀 Quick Start
@@ -89,10 +114,12 @@ Choose your current rotation for specialty-specific feedback:
 
 1. **Configure Settings**: Set AI provider and API keys in sidebar
 2. **Select Rotation**: Choose your current medical service
-3. **Input Audio**: Record live or upload file
-4. **Review Transcription**: Verify speech-to-text accuracy
-5. **Generate Feedback**: Get expert AI analysis
-6. **Download Report**: Save comprehensive feedback document
+3. **Select Format**: Choose your presentation format (Full H&P, SBAR, Consult, etc.)
+4. **Input Audio**: Record live or upload file
+5. **Review Transcription**: Verify speech-to-text accuracy
+6. **Generate Feedback**: Run the multi-agent pipeline for detailed, multi-dimensional analysis
+7. **Explore Results**: Review feedback across tabs — Overview, Clinical Reasoning, Structure & Efficiency, Attending Inner Monologue, Teaching Points
+8. **Download Report**: Save comprehensive feedback document
 
 ## 🎨 Interface
 
@@ -102,11 +129,12 @@ Choose your current rotation for specialty-specific feedback:
 - Tabbed feedback sections for easy navigation
 - Responsive design for various screen sizes
 
-### Feedback Categories
-- **Overall Assessment**: Comprehensive performance overview
-- **Clinical Content**: Medical accuracy and knowledge
-- **Clinical Reasoning**: Diagnostic and therapeutic thinking
-- **Presentation Structure**: Organization and communication
+### Feedback Tabs (Multi-Agent Mode)
+- **Overview**: Synthesized assessment, strengths, improvements, plan coherence, information efficiency
+- **Clinical Reasoning**: Detailed differential dx, summary statement quality, data selectivity, plan coherence
+- **Structure & Efficiency**: Format conformance, sections present/missing, semantic density analysis
+- **Attending Inner Monologue**: Experimental walkthrough of what an attending would think at each point
+- **Teaching Points**: Case-specific clinical pearls, suggested reading, learning summary
 
 ## 🔒 Privacy & Security
 
@@ -127,13 +155,25 @@ Choose your current rotation for specialty-specific feedback:
 
 ```
 presentiq/
-├── app.py                 # Main Streamlit application
-├── feedback_generator.py  # AI feedback generation logic
-├── simple_recorder.py     # Audio recording component
-├── requirements.txt       # Python dependencies
-├── README.md             # This file
-├── .gitignore           # Git ignore patterns
-└── venv/                # Virtual environment
+├── app.py                          # Main Streamlit application
+├── pipeline.py                     # Multi-agent pipeline orchestrator
+├── feedback_generator.py           # Legacy single-prompt feedback (preserved)
+├── agents/                         # Specialized evaluation agents
+│   ├── base.py                     # Base agent class
+│   ├── transcription_qa.py         # Transcription cleanup
+│   ├── clinical_content.py         # Clinical content evaluation
+│   ├── clinical_reasoning.py       # Reasoning + plan coherence
+│   ├── structure_delivery.py       # Structure + semantic density
+│   ├── communication_professionalism.py  # Communication evaluation
+│   ├── anticipatory_reasoning.py   # Attending inner monologue (experimental)
+│   ├── literature_learning.py      # Teaching points
+│   └── synthesizer.py              # Final synthesis agent
+├── configs/
+│   └── presentation_formats.yaml   # Presentation format definitions
+├── simple_recorder.py              # Audio recording component
+├── requirements.txt                # Python dependencies
+├── IDEAS.md                        # Deferred and experimental feature ideas
+└── README.md                       # This file
 ```
 
 ## 🤝 Contributing
