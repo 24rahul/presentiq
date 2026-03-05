@@ -1,0 +1,112 @@
+# Presentation Format Types
+# Students select which format they are presenting in.
+# Each format defines expected structure, flow, and evaluation criteria.
+
+formats:
+  full_hp:
+    name: "Full H&P (History & Physical)"
+    description: "Complete new patient presentation for admission or initial evaluation"
+    typical_context: "New admissions, initial consults, morning rounds"
+    expected_sections:
+      - "Chief complaint and HPI"
+      - "Past medical/surgical history"
+      - "Medications and allergies"
+      - "Social and family history"
+      - "Review of systems"
+      - "Physical examination"
+      - "Labs/imaging/data"
+      - "Assessment with differential diagnosis"
+      - "Plan with rationale"
+    time_expectation: "5-8 minutes"
+    evaluation_focus:
+      - "Completeness of history"
+      - "Logical organization"
+      - "Differential diagnosis breadth"
+      - "Plan tied to assessment"
+
+  focused_hp:
+    name: "Focused H&P"
+    description: "Targeted presentation for a known patient with a specific issue"
+    typical_context: "Follow-up visits, focused consults, problem-based rounds"
+    expected_sections:
+      - "One-liner with context"
+      - "Interval history / overnight events"
+      - "Pertinent exam findings"
+      - "Updated labs/imaging"
+      - "Assessment of active problems"
+      - "Updated plan"
+    time_expectation: "2-4 minutes"
+    evaluation_focus:
+      - "Conciseness and relevance"
+      - "Prioritization of active issues"
+      - "Appropriate filtering of unchanged data"
+      - "Clear problem-based organization"
+
+  sbar:
+    name: "SBAR (Situation-Background-Assessment-Recommendation)"
+    description: "Structured handoff or urgent communication format"
+    typical_context: "Handoffs, calling consults, notifying attendings of acute changes, nursing communication"
+    expected_sections:
+      - "Situation: What is happening right now"
+      - "Background: Relevant context"
+      - "Assessment: What you think is going on"
+      - "Recommendation: What you think should be done"
+    time_expectation: "1-2 minutes"
+    evaluation_focus:
+      - "Brevity and clarity"
+      - "Urgency communicated appropriately"
+      - "Clear ask or recommendation"
+      - "Critical information not omitted"
+
+  consult:
+    name: "Consult Presentation"
+    description: "Presenting to a consulting service with a specific question"
+    typical_context: "Calling consults, presenting to specialty teams"
+    expected_sections:
+      - "Consult question / reason for consult"
+      - "Brief patient summary (one-liner)"
+      - "Relevant history and workup"
+      - "Pertinent exam and data"
+      - "What has been done so far"
+      - "Specific question for the consultant"
+    time_expectation: "2-4 minutes"
+    evaluation_focus:
+      - "Clear and specific consult question"
+      - "Relevant information filtering (not a full H&P dump)"
+      - "Framing appropriate for the consulting specialty"
+      - "What has already been considered/ruled out"
+
+  handoff:
+    name: "Patient Handoff (Sign-out)"
+    description: "End-of-shift handoff to covering team"
+    typical_context: "Night float sign-out, cross-cover handoffs, weekend coverage"
+    expected_sections:
+      - "Patient identifier and one-liner"
+      - "Active issues and current status"
+      - "Anticipatory guidance (if-then statements)"
+      - "To-do items / pending tasks"
+      - "Code status and key contacts"
+    time_expectation: "1-2 minutes per patient"
+    evaluation_focus:
+      - "Anticipatory guidance quality"
+      - "Actionable if-then contingency plans"
+      - "Nothing critical left ambiguous"
+      - "Prioritization of sick vs stable patients"
+
+  post_op:
+    name: "Post-Operative Update"
+    description: "Brief surgical patient update on rounds"
+    typical_context: "Surgical morning rounds, post-op day updates"
+    expected_sections:
+      - "Patient ID, procedure, post-op day"
+      - "Overnight events / subjective complaints"
+      - "Vitals and I/Os"
+      - "Exam (focused on surgical site, lungs, abdomen)"
+      - "Labs and drains"
+      - "Assessment and plan (by system or problem)"
+    time_expectation: "2-3 minutes"
+    evaluation_focus:
+      - "Surgical-relevant data prioritized"
+      - "Systems-based organization"
+      - "Disposition and milestone tracking"
+      - "Conciseness appropriate for surgical rounds"
