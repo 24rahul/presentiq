@@ -371,10 +371,12 @@ else:
 def _display_multi_agent_feedback(feedback):
     agent_results = feedback.get("_agent_results", {})
 
-    tab_overview, tab_reasoning, tab_structure, tab_monologue, tab_learning = st.tabs([
+    tab_overview, tab_reasoning, tab_structure, tab_rewrites, tab_deliberation, tab_monologue, tab_learning = st.tabs([
         "Overview",
         "Clinical Reasoning",
         "Structure & Efficiency",
+        "Before / After",
+        "Deliberation",
         "Attending Inner Monologue",
         "Teaching Points",
     ])
@@ -481,6 +483,90 @@ def _display_multi_agent_feedback(feedback):
                         st.write("**Under-represented (too little time):**")
                         for item in sd["under_represented"]:
                             st.write(f"- {item}")
+
+    with tab_rewrites:
+        contrastive = agent_results.get("contrastive_feedback", {})
+        rewrites = contrastive.get("rewrites", [])
+
+        if rewrites:
+            st.subheader("How Key Sections Could Be Improved")
+            st.caption("Concrete before/after examples for the highest-impact areas.")
+
+            for rw in rewrites:
+                st.markdown(f"**{rw.get('area', 'Improvement')}**")
+
+                col_before, col_after = st.columns(2)
+                with col_before:
+                    st.markdown("*Original:*")
+                    st.warning(rw.get("original", ""))
+                with col_after:
+                    st.markdown("*Improved:*")
+                    st.success(rw.get("improved", ""))
+
+                if rw.get("uses_illustrative_data"):
+                    st.caption("Note: Bracketed values [e.g., ...] are illustrative — substitute the patient's actual data.")
+
+                st.caption(rw.get("why_better", ""))
+                st.markdown("---")
+
+            if contrastive.get("note"):
+                st.info(contrastive["note"])
+        else:
+            st.info("No contrastive rewrites were generated for this analysis.")
+
+    with tab_deliberation:
+        debate = agent_results.get("debate", {})
+        contested = debate.get("contested_points", [])
+
+        if contested:
+            st.subheader("Generous vs. Strict Evaluator Deliberation")
+            st.caption("Two evaluator perspectives debated the assessment to produce more calibrated feedback.")
+
+            for cp in contested:
+                st.markdown(f"**{cp.get('dimension', 'General')}** — Adjustment: `{cp.get('adjustment', 'keep')}`")
+
+                col_gen, col_strict = st.columns(2)
+                with col_gen:
+                    st.markdown("*Generous Evaluator:*")
+                    st.info(cp.get("generous_view", ""))
+                with col_strict:
+                    st.markdown("*Strict Evaluator:*")
+                    st.warning(cp.get("strict_view", ""))
+
+                st.markdown(f"**Resolution:** {cp.get('resolution', '')}")
+                st.markdown("---")
+
+            col_s, col_w = st.columns(2)
+            with col_s:
+                consensus_strengths = debate.get("consensus_strengths", [])
+                if consensus_strengths:
+                    st.subheader("Both Agree: Strengths")
+                    for s in consensus_strengths:
+                        st.write(f"- {s}")
+            with col_w:
+                consensus_weaknesses = debate.get("consensus_weaknesses", [])
+                if consensus_weaknesses:
+                    st.subheader("Both Agree: Needs Work")
+                    for w in consensus_weaknesses:
+                        st.write(f"- {w}")
+
+            if debate.get("overall_calibration"):
+                st.subheader("Calibration Assessment")
+                st.write(debate["overall_calibration"])
+        else:
+            st.info("Deliberation results not available for this analysis.")
+
+        critic = agent_results.get("synthesis_critic", {})
+        if critic and critic.get("issues_found"):
+            st.markdown("---")
+            st.subheader("Synthesis Quality Review")
+            for issue in critic["issues_found"]:
+                st.markdown(f"**{issue.get('type', 'issue').replace('_', ' ').title()}** — {issue.get('location', '')}")
+                st.write(issue.get("description", ""))
+                st.caption(f"Fix: {issue.get('suggested_fix', '')}")
+
+            if feedback.get("_revised"):
+                st.success("The synthesis was automatically revised to address these issues.")
 
     with tab_monologue:
         anticipatory = agent_results.get("anticipatory_reasoning", {})
@@ -647,6 +733,28 @@ def _generate_report(feedback, ai_provider, model, service, transcript_text):
             report_lines.append(f"- {point}")
 
     agent_results = feedback.get("_agent_results", {})
+
+    contrastive = agent_results.get("contrastive_feedback", {})
+    rewrites = contrastive.get("rewrites", [])
+    if rewrites:
+        report_lines.extend(["", "BEFORE / AFTER REWRITES:"])
+        for rw in rewrites:
+            report_lines.append(f"\n  [{rw.get('area', '')}]")
+            report_lines.append(f"  Original: {rw.get('original', '')}")
+            report_lines.append(f"  Improved: {rw.get('improved', '')}")
+            report_lines.append(f"  Why: {rw.get('why_better', '')}")
+            if rw.get("uses_illustrative_data"):
+                report_lines.append("  Note: Bracketed values are illustrative — substitute patient's actual data.")
+
+    debate = agent_results.get("debate", {})
+    if debate.get("contested_points"):
+        report_lines.extend(["", "DELIBERATION (Generous vs Strict):"])
+        for cp in debate["contested_points"]:
+            report_lines.append(f"\n  [{cp.get('dimension', '')}] Adjustment: {cp.get('adjustment', 'keep')}")
+            report_lines.append(f"  Generous: {cp.get('generous_view', '')}")
+            report_lines.append(f"  Strict: {cp.get('strict_view', '')}")
+            report_lines.append(f"  Resolution: {cp.get('resolution', '')}")
+
     anticipatory = agent_results.get("anticipatory_reasoning", {})
     if anticipatory.get("overall_impression"):
         report_lines.extend([

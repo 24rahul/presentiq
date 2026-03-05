@@ -64,14 +64,30 @@ Seven specialized agents evaluate different dimensions of the presentation:
         |          |          |          |
         +----------+----------+----------+   Step 4: PARALLEL
                               |
-                All agent results collected
+              +---------------+---------------+
+              |                               |
+  +---------------------+     +---------------------------+
+  | 5a. Debate Agent    |     | 5b. Contrastive Feedback  |
+  |                     |     |                           |
+  | Generous vs strict  |     | Before/after rewrites     |   Step 5:
+  | evaluator argue     |     | for weakest sections      |   PARALLEL
+  | over assessment     |     | (flags illustrative data) |
+  +---------------------+     +---------------------------+
+              |                               |
+              +---------------+---------------+
                               |
                 +----------------------------+
-                | 5. Attending Synthesizer   |  Holistic synthesis into
-                |                            |  cohesive attending-level
-                |  Resolves conflicts,       |  feedback report
-                |  prioritizes top 3-4       |
-                |  actionable improvements   |
+                | 6. Attending Synthesizer   |  Holistic synthesis informed
+                |                            |  by debate deliberation
+                |  Resolves conflicts using  |
+                |  debate resolutions        |
+                +----------------------------+
+                              |
+                +----------------------------+
+                | 7. Synthesis Critic        |  Reviews for contradictions,
+                |                            |  vague advice, missed priorities.
+                |  If issues found:          |  Auto-revises the synthesis.
+                |  → revision loop           |
                 +----------------------------+
                               |
                      Final Feedback Report
@@ -80,6 +96,8 @@ Seven specialized agents evaluate different dimensions of the presentation:
 
 Agents 1-3 run **sequentially** because each depends on the previous output.
 Step 4 runs up to 4 agents **in parallel** (ThreadPoolExecutor) since they all only need the cleaned transcript and reasoning results.
+Step 5 runs Debate + Contrastive Feedback **in parallel** — both only need step 4 results.
+Step 7 (Synthesis Critic) triggers a **single revision pass** if it finds contradictions, vague advice, or missed priorities.
 Anticipatory Reasoning is **optional** (toggled in sidebar).
 
 ### Presentation Format Types

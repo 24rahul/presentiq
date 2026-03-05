@@ -15,13 +15,13 @@ class SynthesizerAgent(BaseAgent):
         format_config = context.get("format_config", {})
 
         # Collect all agent results
-        qa_result = context.get("transcription_qa_result", {})
         content_result = context.get("clinical_content_result", {})
         reasoning_result = context.get("clinical_reasoning_result", {})
         structure_result = context.get("structure_delivery_result", {})
         communication_result = context.get("communication_professionalism_result", {})
         anticipatory_result = context.get("anticipatory_reasoning_result", {})
         literature_result = context.get("literature_learning_result", {})
+        debate_result = context.get("debate_result", {})
 
         # Build the synthesis input
         agent_summaries = self._compile_agent_summaries(
@@ -29,13 +29,15 @@ class SynthesizerAgent(BaseAgent):
             communication_result, anticipatory_result, literature_result
         )
 
+        debate_section = self._compile_debate_summary(debate_result)
+
         system_prompt = f"""You are a senior attending physician on {service_context['name']} ({service_context['specialty']}). You have just listened to a medical student's oral presentation and multiple specialist evaluators have provided their analyses.
 
 Your job is to SYNTHESIZE these into a single, cohesive feedback report that reads as if it comes from one experienced attending — not a committee.
 
 RULES:
 1. Do NOT just concatenate the agent outputs. Synthesize them into a coherent narrative.
-2. If agents DISAGREE, use your clinical judgment to resolve the conflict.
+2. If agents DISAGREE, use the DEBATE DELIBERATION below to guide your resolution — it reflects a structured discussion between a generous and strict evaluator.
 3. Prioritize the 3-4 MOST IMPORTANT pieces of feedback. Students can't improve everything at once.
 4. Lead with strengths, then constructive feedback.
 5. End with specific, actionable next steps.
@@ -45,6 +47,8 @@ Presentation format: {format_config.get('name', 'Standard')}
 
 AGENT EVALUATIONS:
 {agent_summaries}
+
+{debate_section}
 
 Return JSON:
 {{
@@ -78,6 +82,29 @@ The overall_score must be an integer 1-10. Be honest but constructive."""
             )
 
         return result
+
+    def _compile_debate_summary(self, debate: Dict[str, Any]) -> str:
+        if not debate or not debate.get("contested_points"):
+            return ""
+
+        lines = ["DEBATE DELIBERATION (Generous vs Strict Evaluator):"]
+        for cp in debate.get("contested_points", []):
+            lines.append(f"\n[{cp.get('dimension', 'General')}]")
+            lines.append(f"  Generous: {cp.get('generous_view', '')}")
+            lines.append(f"  Strict: {cp.get('strict_view', '')}")
+            lines.append(f"  Resolution: {cp.get('resolution', '')}")
+            lines.append(f"  Adjustment: {cp.get('adjustment', 'keep')}")
+
+        consensus = debate.get("consensus_strengths", [])
+        if consensus:
+            lines.append(f"\nConsensus strengths: {', '.join(consensus)}")
+        weaknesses = debate.get("consensus_weaknesses", [])
+        if weaknesses:
+            lines.append(f"Consensus weaknesses: {', '.join(weaknesses)}")
+        if debate.get("overall_calibration"):
+            lines.append(f"Calibration note: {debate['overall_calibration']}")
+
+        return "\n".join(lines)
 
     def _compile_agent_summaries(self, content, reasoning, structure, communication, anticipatory, literature) -> str:
         sections = []
