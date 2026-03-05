@@ -1,17 +1,11 @@
 """Multi-agent pipeline orchestrator for PresentIQ.
 
-Replaces the monolithic single-prompt approach with a pipeline of
-specialized agents that each evaluate a different dimension.
-
 Pipeline:
 1. Transcription QA Agent
 2. Clinical Content Agent
 3. Clinical Reasoning Agent (with plan coherence)
-4a. Structure & Delivery Agent (parallel with 4b)
-4b. Communication & Professionalism Agent (parallel with 4a)
-5. Anticipatory Reasoning Agent (experimental)
-6. Literature & Learning Agent
-7. Attending Synthesizer Agent
+4. Parallel: Structure, Communication, Literature, Anticipatory (optional)
+5. Attending Synthesizer Agent
 """
 
 import openai
@@ -85,7 +79,7 @@ class FeedbackPipeline:
         )
         format_config = PRESENTATION_FORMATS.get(presentation_format, {})
 
-        total_steps = 6 if enable_anticipatory else 5
+        total_steps = 5
 
         def _progress(name, step):
             if progress_callback:
@@ -110,30 +104,32 @@ class FeedbackPipeline:
         reasoning_result = self.clinical_reasoning.run(context)
         context["clinical_reasoning_result"] = reasoning_result
 
-        _progress("Evaluating structure and communication", 4)
-        with ThreadPoolExecutor(max_workers=2) as executor:
-            future_structure = executor.submit(self.structure_delivery.run, context)
-            future_communication = executor.submit(self.communication_prof.run, context)
+        _progress("Running parallel evaluations", 4)
+        parallel_agents = {
+            "structure": self.structure_delivery,
+            "communication": self.communication_prof,
+            "literature": self.literature_learning,
+        }
+        if enable_anticipatory:
+            parallel_agents["anticipatory"] = self.anticipatory_reasoning
 
-            structure_result = future_structure.result()
-            communication_result = future_communication.result()
+        with ThreadPoolExecutor(max_workers=len(parallel_agents)) as executor:
+            futures = {
+                key: executor.submit(agent.run, context)
+                for key, agent in parallel_agents.items()
+            }
+            results = {key: future.result() for key, future in futures.items()}
+
+        structure_result = results["structure"]
+        communication_result = results["communication"]
+        literature_result = results["literature"]
 
         context["structure_delivery_result"] = structure_result
         context["communication_professionalism_result"] = communication_result
-
-        if enable_anticipatory:
-            _progress("Generating attending inner monologue", 5)
-            anticipatory_result = self.anticipatory_reasoning.run(context)
-            context["anticipatory_reasoning_result"] = anticipatory_result
-        else:
-            context["anticipatory_reasoning_result"] = {}
-
-        step_num = 6 if enable_anticipatory else 5
-        _progress("Identifying teaching points", step_num)
-        literature_result = self.literature_learning.run(context)
         context["literature_learning_result"] = literature_result
+        context["anticipatory_reasoning_result"] = results.get("anticipatory", {})
 
-        _progress("Synthesizing feedback", step_num)
+        _progress("Synthesizing feedback", 5)
         synthesis = self.synthesizer.run(context)
 
         synthesis["_agent_results"] = {

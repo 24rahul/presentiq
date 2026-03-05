@@ -32,70 +32,55 @@ Seven specialized agents evaluate different dimensions of the presentation:
 ### Pipeline Flow
 
 ```
-                        Audio Input
-                            |
-                    [Whisper Transcription]
-                            |
-                      Raw Transcript
-                            |
-                 +-----------------------+
-                 |  1. Transcription QA  |  Clean speech-to-text artifacts,
-                 |                       |  flag unclear segments
-                 +-----------------------+
-                            |
-                    Cleaned Transcript
-                            |
-                 +-----------------------+
-                 |  2. Clinical Content  |  Medical accuracy, completeness,
-                 |                       |  service-specific knowledge
-                 +-----------------------+
-                            |
-                 +-----------------------+
-                 | 3. Clinical Reasoning |  Differential dx, summary statement,
-                 |                       |  plan coherence, data selectivity
-                 +-----------------------+
-                            |
-              +-------------+-------------+
-              |                           |
-   +---------------------+   +-------------------------+
-   | 4a. Structure &     |   | 4b. Communication &     |
-   |     Delivery        |   |     Professionalism     |
-   |                     |   |                         |   Run in
-   | Format conformance, |   | Audience adaptation,    |   PARALLEL
-   | semantic density    |   | patient-centered lang.  |
-   +---------------------+   +-------------------------+
-              |                           |
-              +-------------+-------------+
-                            |
-              +----------------------------+
-              | 5. Anticipatory Reasoning  |  (optional / experimental)
-              |                            |  Attending inner monologue --
-              | What an attending thinks   |  real-time cognitive walkthrough
-              | at each point              |
-              +----------------------------+
-                            |
-              +----------------------------+
-              | 6. Literature & Learning   |  Case-specific teaching points,
-              |                            |  suggested reading
-              +----------------------------+
-                            |
-        All agent results collected
-                            |
-              +----------------------------+
-              | 7. Attending Synthesizer   |  Holistic synthesis into
-              |                            |  cohesive attending-level
-              |  Resolves conflicts,       |  feedback report
-              |  prioritizes top 3-4       |
-              |  actionable improvements   |
-              +----------------------------+
-                            |
-                   Final Feedback Report
-                  (tabs + downloadable)
+                          Audio Input
+                              |
+                      [Whisper Transcription]
+                              |
+                        Raw Transcript
+                              |
+                   +-----------------------+
+                   |  1. Transcription QA  |  Clean speech-to-text artifacts,
+                   |                       |  flag unclear segments
+                   +-----------------------+
+                              |
+                      Cleaned Transcript
+                              |
+                   +-----------------------+
+                   |  2. Clinical Content  |  Medical accuracy, completeness,
+                   |                       |  service-specific knowledge
+                   +-----------------------+
+                              |
+                   +-----------------------+
+                   | 3. Clinical Reasoning |  Differential dx, summary statement,
+                   |                       |  plan coherence, data selectivity
+                   +-----------------------+
+                              |
+        +----------+----------+----------+----------+
+        |          |          |          |           |
+ +-----------+ +---------+ +----------+ +------------------+
+ | Structure | | Comms & | | Lit. &   | | Anticipatory     |
+ | & Delivery| | Profess.| | Learning | | Reasoning (opt.) |
+ +-----------+ +---------+ +----------+ +------------------+
+        |          |          |          |
+        +----------+----------+----------+   Step 4: PARALLEL
+                              |
+                All agent results collected
+                              |
+                +----------------------------+
+                | 5. Attending Synthesizer   |  Holistic synthesis into
+                |                            |  cohesive attending-level
+                |  Resolves conflicts,       |  feedback report
+                |  prioritizes top 3-4       |
+                |  actionable improvements   |
+                +----------------------------+
+                              |
+                     Final Feedback Report
+                    (tabs + downloadable)
 ```
 
 Agents 1-3 run **sequentially** because each depends on the previous output.
-Agents 4a and 4b run **in parallel** (ThreadPoolExecutor) since they are independent.
-Agent 5 is **optional** (toggled in sidebar). Agents 6-7 always run last.
+Step 4 runs up to 4 agents **in parallel** (ThreadPoolExecutor) since they all only need the cleaned transcript and reasoning results.
+Anticipatory Reasoning is **optional** (toggled in sidebar).
 
 ### Presentation Format Types
 Select the type of presentation you are giving for format-specific evaluation:
