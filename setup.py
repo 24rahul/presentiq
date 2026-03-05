@@ -83,7 +83,6 @@ def test_installation():
     print("\nTesting installation...")
     try:
         import streamlit
-        import whisper
         import openai
         import pyaudio
         import yaml
@@ -92,10 +91,6 @@ def test_installation():
         from agents.base import BaseAgent
         from pipeline import FeedbackPipeline, PRESENTATION_FORMATS
         print(f"[OK] Agent pipeline loaded ({len(PRESENTATION_FORMATS)} presentation formats)")
-
-        print("Loading Whisper model (may take a moment)...")
-        model = whisper.load_model("base")
-        print("[OK] Whisper model loaded")
 
         return True
     except ImportError as e:

@@ -16,10 +16,9 @@
 ### Model Presentation Generation
 - DECIDED AGAINST: Generating an "ideal" version of the same case would bottleneck all students into a single presentation style, which may not be the right approach
 
-## Experimental Ideas
+## Implemented (Experimental)
 
 ### Attending Inner Monologue (Anticipatory Reasoning)
-- Walk through the transcript and annotate what an attending would be thinking/wondering at each point
-- "At this point I'm wondering about PE..." / "Why haven't they mentioned the troponin yet?"
-- This is novel - no existing tool does this
-- Could be its own standalone feature or part of the Clinical Reasoning Agent
+- Implemented as `agents/anticipatory_reasoning.py`
+- Walks through the transcript and annotates what an attending would be thinking/wondering at each point
+- Available as a toggle in the sidebar; displayed in its own feedback tab
