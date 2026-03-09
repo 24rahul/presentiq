@@ -1,10 +1,12 @@
 # PresentIQ - Medical Presentation Feedback System
 
+> **Live Version:** PresentIQ is now integrated into [argosresearch.org/presentiq](https://argosresearch.org/presentiq)
+>
+> This repository contains the original Streamlit prototype. The production version runs on the ARGOS Research website.
+
 ![PresentIQ](https://img.shields.io/badge/PresentIQ-Medical%20AI-blue.svg)
 ![Python](https://img.shields.io/badge/Python-3.8+-brightgreen.svg)
 ![Streamlit](https://img.shields.io/badge/Streamlit-Web%20App-red.svg)
-
-**Created by Rahul Gorijavolu and Emily Zhao at the Johns Hopkins University School of Medicine**
 
 Multi-agent feedback system for medical student oral presentations. Uses a pipeline of 7 specialized evaluation agents to provide attending-level analysis across clinical content, reasoning, structure, communication, and more.
 
