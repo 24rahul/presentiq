@@ -1,0 +1,87 @@
+# Study cases; see docs/operations.md for the production counterpart.
+teachable:
+  signup_url: https://www.researchteaching.com/signup/
+  signup_code: learningrocks
+clerkships:
+  surgery:
+    display_name: Surgery
+    cases:
+    - id: case_079
+      title: Case 079 – Abdominal Pain (Appendicitis)
+      teachable_url: https://www.researchteaching.com/article/532
+      service: surgery_general
+      presentation_format: full_hp
+    - id: case_299
+      title: Case 299 – Bowel Obstruction
+      teachable_url: https://www.researchteaching.com/article/752
+      service: surgery_general
+      presentation_format: full_hp
+    - id: case_461
+      title: Case 461 – Abdominal Pain (Acute Cholecystitis)
+      teachable_url: https://www.researchteaching.com/article/914
+      service: surgery_general
+      presentation_format: full_hp
+  neurology:
+    display_name: Neurology
+    cases:
+    - id: case_009
+      title: Case 009 – Multiple Neurological Symptoms Over Time
+      teachable_url: https://www.researchteaching.com/article/17
+      service: neurology_adult_general
+      presentation_format: full_hp
+    - id: case_011
+      title: Case 011 – Seizure
+      teachable_url: https://www.researchteaching.com/article/19
+      service: neurology_adult_general
+      presentation_format: full_hp
+    - id: case_012
+      title: Case 012 – Left-Sided Weakness
+      teachable_url: https://www.researchteaching.com/article/20
+      service: neurology_adult_general
+      presentation_format: full_hp
+  internal_medicine:
+    display_name: Internal Medicine
+    cases:
+    - id: case_037
+      title: Case 037 – Palpitations
+      teachable_url: https://www.researchteaching.com/article/43
+      service: internal_medicine_hospitalist
+      presentation_format: full_hp
+    - id: case_032
+      title: Case 032 – Chest Pain
+      teachable_url: https://www.researchteaching.com/article/38
+      service: internal_medicine_hospitalist
+      presentation_format: full_hp
+    - id: case_039
+      title: Case 039 – Shortness of Breath and Ankle Swelling
+      teachable_url: https://www.researchteaching.com/article/45
+      service: internal_medicine_hospitalist
+      presentation_format: full_hp
+  obgyn:
+    display_name: OB/GYN
+    cases:
+    - id: case_133
+      title: Case 133 – Heavy Menstrual Bleeding
+      teachable_url: https://www.researchteaching.com/article/586
+      service: obgyn_general
+      presentation_format: full_hp
+    - id: case_288
+      title: Case 288 – Vaginal Discharge
+      teachable_url: https://www.researchteaching.com/article/741
+      service: obgyn_general
+      presentation_format: full_hp
+    - id: case_165
+      title: Case 165 – Preterm Rupture of Membranes
+      teachable_url: https://www.researchteaching.com/article/618
+      service: obgyn_general
+      presentation_format: full_hp
+surveys:
+- title: Pre-Study Survey
+  url: https://jh.qualtrics.com/jfe/form/SV_7WJNyGeEucnuMT4
+- title: Post-Study Survey
+  url: https://jh.qualtrics.com/jfe/form/SV_bf4wlU12t1fWYe2
+presentation_defaults:
+  ai_provider: OpenAI
+  model: gpt-5.5
+  use_multi_agent: true
+  enable_anticipatory: true

@@ -1,0 +1,160 @@
+from typing import Any, Dict
+
+from presentiq.ai.agents.base import BaseAgent
+
+
+class SynthesizerAgent(BaseAgent):
+    """Combines all agent outputs into a cohesive feedback report that reads
+    like it comes from a single attending, not a committee.
+    """
+
+    agent_name = "synthesizer"
+    agent_description = "Synthesizes all agent outputs into cohesive attending-level feedback"
+
+    def run(self, context: Dict[str, Any]) -> Dict[str, Any]:
+        service_context = context["service_context"]
+        format_config = context.get("format_config", {})
+
+        # Collect all agent results
+        content_result = context.get("clinical_content_result", {})
+        reasoning_result = context.get("clinical_reasoning_result", {})
+        structure_result = context.get("structure_delivery_result", {})
+        communication_result = context.get("communication_professionalism_result", {})
+        anticipatory_result = context.get("anticipatory_reasoning_result", {})
+        literature_result = context.get("literature_learning_result", {})
+        debate_result = context.get("debate_result", {})
+
+        # Build the synthesis input
+        agent_summaries = self._compile_agent_summaries(
+            content_result,
+            reasoning_result,
+            structure_result,
+            communication_result,
+            anticipatory_result,
+            literature_result,
+        )
+
+        debate_section = self._compile_debate_summary(debate_result)
+
+        system_prompt = f"""You are a senior attending physician on {service_context["name"]} ({service_context["specialty"]}). You have just listened to a medical student's oral presentation and multiple specialist evaluators have provided their analyses.
+
+Your job is to SYNTHESIZE these into a single, cohesive feedback report that reads as if it comes from one experienced attending — not a committee.
+
+RULES:
+1. Do NOT just concatenate the agent outputs. Synthesize them into a coherent narrative.
+2. If agents DISAGREE, use the DEBATE DELIBERATION below to guide your resolution — it reflects a structured discussion between a generous and strict evaluator.
+3. Prioritize the 3-4 MOST IMPORTANT pieces of feedback. Students can't improve everything at once.
+4. Lead with strengths, then constructive feedback.
+5. End with specific, actionable next steps.
+6. The overall score should reflect your holistic clinical judgment across all dimensions -- do not use a formula or fixed weights. Consider the full picture the way an attending would.
+
+Presentation format: {format_config.get("name", "Standard")}
+
+AGENT EVALUATIONS:
+{agent_summaries}
+
+{debate_section}
+
+Return JSON:
+{{
+    "overall_score": 7,
+    "overall_assessment": "3-4 sentence cohesive summary — the kind of feedback an attending would give verbally after a presentation",
+    "clinical_content": "4-6 sentence synthesis of clinical content feedback",
+    "clinical_reasoning": "4-6 sentence synthesis of reasoning feedback, including plan coherence",
+    "presentation_structure": "4-6 sentence synthesis of structure, format conformance, and information efficiency",
+    "communication_professionalism": "3-4 sentence synthesis of communication feedback",
+    "service_specific_feedback": "2-3 sentences specific to {service_context["name"]}",
+    "strengths": ["top 3-4 specific strengths across all dimensions"],
+    "areas_for_improvement": ["top 3-4 prioritized, actionable improvements"],
+    "teaching_points": ["2-3 highest-yield teaching points from this case"],
+    "suggested_reading": ["1-3 specific topics to review"],
+    "semantic_density_summary": "1-2 sentences on information efficiency — was time well allocated?",
+    "plan_coherence_summary": "1-2 sentences on whether the presentation built a narrative that supported the plan"
+}}
+
+The overall_score must be an integer 1-10. Be honest but constructive."""
+
+        user_prompt = (
+            "Synthesize the agent evaluations above into a single cohesive feedback report."
+        )
+
+        return self._call_llm_json(system_prompt, user_prompt, max_tokens=2500)
+
+    def _compile_debate_summary(self, debate: Dict[str, Any]) -> str:
+        if not debate or not debate.get("contested_points"):
+            return ""
+
+        lines = ["DEBATE DELIBERATION (Generous vs Strict Evaluator):"]
+        for cp in debate.get("contested_points", []):
+            lines.append(f"\n[{cp.get('dimension', 'General')}]")
+            lines.append(f"  Generous: {cp.get('generous_view', '')}")
+            lines.append(f"  Strict: {cp.get('strict_view', '')}")
+            lines.append(f"  Resolution: {cp.get('resolution', '')}")
+            lines.append(f"  Adjustment: {cp.get('adjustment', 'keep')}")
+
+        consensus = debate.get("consensus_strengths", [])
+        if consensus:
+            lines.append(f"\nConsensus strengths: {', '.join(consensus)}")
+        weaknesses = debate.get("consensus_weaknesses", [])
+        if weaknesses:
+            lines.append(f"Consensus weaknesses: {', '.join(weaknesses)}")
+        if debate.get("overall_calibration"):
+            lines.append(f"Calibration note: {debate['overall_calibration']}")
+
+        return "\n".join(lines)
+
+    def _compile_agent_summaries(
+        self, content, reasoning, structure, communication, anticipatory, literature
+    ) -> str:
+        sections = []
+
+        if content:
+            sections.append(f"""CLINICAL CONTENT (Score: {content.get("score", "N/A")}/10):
+{content.get("content_analysis", "No analysis")}
+Elements missing: {", ".join(content.get("elements_missing", [])) or "None"}
+Service notes: {content.get("service_specific_notes", "")}""")
+
+        if reasoning:
+            sections.append(f"""CLINICAL REASONING (Score: {reasoning.get("score", "N/A")}/10):
+{reasoning.get("reasoning_analysis", "No analysis")}
+Differential: {reasoning.get("differential_assessment", "")}
+Summary statement: {reasoning.get("summary_statement_quality", "")}
+Plan coherence: {reasoning.get("plan_coherence", "")}
+Data selectivity: {reasoning.get("data_selectivity", "")}""")
+
+        if structure:
+            sd = structure.get("semantic_density", {})
+            sections.append(f"""STRUCTURE & DELIVERY (Score: {structure.get("score", "N/A")}/10):
+Format conformance: {structure.get("format_conformance", "")}
+Organization: {structure.get("organization_flow", "")}
+Semantic density: {sd.get("analysis", "")}
+Over-represented: {", ".join(sd.get("over_represented", [])) or "None"}
+Under-represented: {", ".join(sd.get("under_represented", [])) or "None"}
+Efficiency: {sd.get("efficiency_rating", "N/A")}""")
+
+        if communication:
+            sections.append(f"""COMMUNICATION & PROFESSIONALISM (Score: {communication.get("score", "N/A")}/10):
+Audience adaptation: {communication.get("audience_adaptation", "")}
+Patient-centered language: {communication.get("patient_centered_language", "")}
+Confidence: {communication.get("confidence_assessment", "")}""")
+
+        if anticipatory and anticipatory.get("inner_monologue"):
+            unanswered = anticipatory.get("unanswered_questions", [])
+            strengths = anticipatory.get("anticipatory_strengths", [])
+            missed = anticipatory.get("missed_anticipations", [])
+            sections.append(f"""ANTICIPATORY REASONING (Experimental):
+Overall impression: {anticipatory.get("overall_impression", "")}
+Anticipatory strengths: {", ".join(strengths) or "None noted"}
+Missed anticipations: {", ".join(missed) or "None noted"}
+Unanswered questions: {", ".join(unanswered) or "None"}""")
+
+        if literature and literature.get("teaching_points"):
+            tp_strs = [
+                f"- {tp.get('topic', '')}: {tp.get('point', '')}"
+                for tp in literature["teaching_points"][:3]
+            ]
+            sections.append(f"""TEACHING POINTS:
+{chr(10).join(tp_strs)}
+Suggested reading: {", ".join(literature.get("suggested_reading", [])) or "None"}""")
+
+        return "\n\n".join(sections)

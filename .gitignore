@@ -1,5 +1,10 @@
 # Environment variables (contains API keys)
 .env
+.env.*
+!.env.example
+
+# Service account credentials (NEVER commit)
+credentials/
 
 # Python
 __pycache__/
@@ -69,4 +74,8 @@ logs/
 # Temporary files
 tmp/
 temp/
-*.tmp 
+*.tmp
+# Development tool caches
+.ruff_cache/
+.pytest_cache/
+.venv/
