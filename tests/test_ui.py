@@ -8,6 +8,7 @@ from streamlit.testing.v1 import AppTest
 
 from presentiq.access import UsageLimits
 from presentiq.ai.agents.base import BaseAgent
+from presentiq.paths import ROOT
 from presentiq.web.portal import load_clerkship_config
 from tests.fixtures import model_response
 
@@ -53,13 +54,13 @@ class UITests(unittest.TestCase):
         return next(button for button in app.button if button.label == label)
 
     def advanced(self):
-        app = AppTest.from_file("app.py").run()
+        app = AppTest.from_file(str(ROOT / "app.py")).run()
         self.button(app, "Open Advanced Mode").click().run()
         self.assertFalse(app.exception)
         return app
 
     def uploaded(self, portal=False):
-        app = AppTest.from_file("app.py")
+        app = AppTest.from_file(str(ROOT / "app.py"))
         if portal:
             clerkship = load_clerkship_config()["clerkships"]["surgery"]
             app.session_state["page"] = "presentiq"
@@ -83,7 +84,7 @@ class UITests(unittest.TestCase):
         return app
 
     def test_signup_instructions_survive_navigation_changes(self):
-        app = AppTest.from_file("app.py").run()
+        app = AppTest.from_file(str(ROOT / "app.py")).run()
         for _ in range(2):
             content = "\n".join(m.value for m in app.markdown)
             self.assertIn("learningrocks", content)
