@@ -143,7 +143,7 @@ def render_dashboard(config):
             "Neurology uses the ScholarRx Neurology Clinical Bricks Library. "
             f"Choose {required} different clinical bricks and submit one presentation for each. "
             "Repeat attempts on the same brick count once. "
-            "The hosted ARGOS version includes an integrated reader for openly licensed bricks."
+            "Open each brick on ScholarRx, then return here to record your presentation."
         )
         for material in clerkship.get("materials", []):
             _configured_link(material["title"], material["resource_url"], material["id"])
