@@ -9,10 +9,10 @@ For manual setup, install `requirements.txt`, copy `.env.example` to `.env`, and
 
 ## Student workflow
 
-1. Open PresentIQ and select your clerkship on the first screen.
+1. On the hosted ARGOS app, enter your study ID and Johns Hopkins email before selecting a clerkship. Use the same identity each visit to restore saved progress. The Python prototype starts with clerkship selection.
 2. For Neurology, choose a ScholarRx clinical brick. The hosted ARGOS app displays 18 openly licensed bricks in its reader; three open on ScholarRx. The Python prototype links to the source library.
 3. For the other clerkships, create an account at [Research Teaching](https://www.researchteaching.com/signup/), choose and confirm your password, and enter `learningrocks` in **Sign-Up Code**. Return to the case dashboard after signing up.
-4. Complete the pre-study survey, review a case, and record a presentation or upload audio up to 25 MB. The hosted app requests study ID and email before the first recording.
+4. Complete the pre-study survey, review a case, and record a presentation or upload audio up to 25 MB. The hosted app remembers previously opened surveys and lets you save or undo "I already completed the pre-study survey," clearly labeled as self-reported.
 5. Review the transcript, generate feedback, and download your report. If the study save fails, use **Retry saving to study**.
 6. Complete the post-study survey after the required presentations. Neurology requires three presentations on three different clinical bricks; repeat attempts on one brick count once. Reading a guide or answering practice questions does not create a PresentIQ submission or update ScholarRx course credit.
 
