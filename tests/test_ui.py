@@ -83,19 +83,33 @@ class UITests(unittest.TestCase):
         self.assertEqual(app.session_state["feedback"]["overall_score"], 8)
         return app
 
-    def test_signup_instructions_survive_navigation_changes(self):
+    def test_clerkship_selection_precedes_provider_instructions(self):
         app = AppTest.from_file(str(ROOT / "app.py")).run()
-        for _ in range(2):
-            content = "\n".join(m.value for m in app.markdown)
-            self.assertIn("learningrocks", content)
-            self.assertIn("Sign-Up Code", content)
-            self.assertIn(
-                "https://www.researchteaching.com/signup/",
-                [link.proto.url for link in app.get("link_button")],
-            )
-            if app.session_state["page"] == "select_clerkship":
-                app.selectbox[0].set_value("surgery").run()
-                self.button(app, "Continue").click().run()
+        content = "\n".join(m.value for m in app.markdown)
+        self.assertNotIn("learningrocks", content)
+        app.selectbox[0].set_value("surgery").run()
+        self.button(app, "Continue").click().run()
+        content = "\n".join(m.value for m in app.markdown)
+        self.assertIn("learningrocks", content)
+        self.assertIn("Sign-Up Code", content)
+        self.assertIn(
+            "https://www.researchteaching.com/signup/",
+            [link.proto.url for link in app.get("link_button")],
+        )
+        self.assertFalse(app.exception)
+
+    def test_neurology_shows_bricks_without_teachable(self):
+        app = AppTest.from_file(str(ROOT / "app.py")).run()
+        app.selectbox[0].set_value("neurology").run()
+        self.button(app, "Continue").click().run()
+        content = "\n".join(m.value for m in app.markdown)
+        self.assertNotIn("learningrocks", content)
+        self.assertNotIn("Create your Teachable account", content)
+        links = [link.proto.url for link in app.get("link_button")]
+        self.assertEqual(
+            sum(url.startswith("https://exchange.scholarrx.com/brick/") for url in links), 21
+        )
+        self.assertEqual(len(app.session_state["clerkship_data"]["cases"]), 19)
         self.assertFalse(app.exception)
 
     def test_server_secrets_are_never_populated_or_changed(self):

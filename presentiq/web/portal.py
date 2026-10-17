@@ -94,8 +94,6 @@ def render_clerkship_selection(config):
     st.markdown("### Welcome to the PresentIQ Pilot Study")
     st.markdown("Select your clerkship to view your assigned cases and surveys.")
 
-    _render_teachable_signup(config)
-
     clerkships = config.get("clerkships", {})
     options = list(clerkships.keys())
     labels = {k: v.get("display_name", k) for k, v in clerkships.items()}
@@ -139,7 +137,16 @@ def render_dashboard(config):
     st.title("PresentIQ")
     st.subheader(f"{clerkship.get('display_name', '')} — Student Dashboard")
 
-    _render_teachable_signup(config)
+    if clerkship.get("resource_provider") == "scholarrx":
+        st.info(
+            "Neurology uses the ScholarRx Neurology Clinical Bricks Library. "
+            "Choose at least one clinical brick for your presentation. "
+            "The hosted ARGOS version includes an integrated reader for openly licensed bricks."
+        )
+        for material in clerkship.get("materials", []):
+            _configured_link(material["title"], material["resource_url"], material["id"])
+    else:
+        _render_teachable_signup(config)
 
     # --- Surveys ---
     surveys = config.get("surveys", [])
@@ -166,7 +173,13 @@ def render_dashboard(config):
                 fmt_label = case.get("presentation_format", "").replace("_", " ").title()
                 st.caption(f"Service: {service_label} | Format: {fmt_label}")
             with col_teachable:
-                _configured_link("Review on Teachable", case.get("teachable_url"), f"case_link_{i}")
+                _configured_link(
+                    "Read on ScholarRx"
+                    if clerkship.get("resource_provider") == "scholarrx"
+                    else "Review on Teachable",
+                    case.get("resource_url") or case.get("teachable_url"),
+                    f"case_link_{i}",
+                )
             with col_record:
                 st.button(
                     "Record Presentation",

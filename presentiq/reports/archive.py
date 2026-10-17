@@ -75,6 +75,8 @@ def create_data_package(
             "clerkship": clerkship_name,
             "case_id": case.get("id"),
             "case_title": case.get("title"),
+            "case_source": "scholarrx" if case.get("resource_url") else "teachable",
+            "case_url": case.get("resource_url") or case.get("teachable_url"),
             "service": service,
             "presentation_format": case.get("presentation_format"),
             "ai_provider": ai_provider,

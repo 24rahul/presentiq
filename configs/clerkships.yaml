@@ -24,21 +24,116 @@ clerkships:
   neurology:
     display_name: Neurology
     cases:
-    - id: case_009
-      title: Case 009 – Multiple Neurological Symptoms Over Time
-      teachable_url: https://www.researchteaching.com/article/17
+    - id: brick_lkdndoy1w5y2
+      title: '"I feel delirious"'
+      resource_url: https://exchange.scholarrx.com/brick/lkdndoy1w5y2
       service: neurology_adult_general
       presentation_format: full_hp
-    - id: case_011
-      title: Case 011 – Seizure
-      teachable_url: https://www.researchteaching.com/article/19
+    - id: brick_ex0nprjl257q
+      title: '"My Head is Splitting and I Can’t Feel My Right Side."'
+      resource_url: https://exchange.scholarrx.com/brick/ex0nprjl257q
       service: neurology_adult_general
       presentation_format: full_hp
-    - id: case_012
-      title: Case 012 – Left-Sided Weakness
-      teachable_url: https://www.researchteaching.com/article/20
+    - id: brick_ory9y727d9kd
+      title: '"My legs are suddenly weak!"'
+      resource_url: https://exchange.scholarrx.com/brick/ory9y727d9kd
       service: neurology_adult_general
       presentation_format: full_hp
+    - id: brick_vprnj4rkrnm6
+      title: '"I don''t feel well and my head hurts when I lay down"'
+      resource_url: https://exchange.scholarrx.com/brick/vprnj4rkrnm6
+      service: neurology_adult_general
+      presentation_format: full_hp
+    - id: brick_ory9y3o0nkd3
+      title: '"I''m having the worst headache of my life!"'
+      resource_url: https://exchange.scholarrx.com/brick/ory9y3o0nkd3
+      service: neurology_adult_general
+      presentation_format: full_hp
+    - id: brick_m645gqdknjq1
+      title: '"My hand is tingling." - An approach to sensory and motor symptoms in
+        the upper extremity.'
+      resource_url: https://exchange.scholarrx.com/brick/m645gqdknjq1
+      service: neurology_adult_general
+      presentation_format: full_hp
+    - id: brick_jry51geo5e31
+      title: '"I feel dizzy"- Approach to Vertigo'
+      resource_url: https://exchange.scholarrx.com/brick/jry51geo5e31
+      service: neurology_adult_general
+      presentation_format: full_hp
+    - id: brick_1z050y04ndvk
+      title: '"I can''t see out of my eye."'
+      resource_url: https://exchange.scholarrx.com/brick/1z050y04ndvk
+      service: neurology_adult_general
+      presentation_format: full_hp
+    - id: brick_yog9mwx15qkp
+      title: '"I''m seeing double."'
+      resource_url: https://exchange.scholarrx.com/brick/yog9mwx15qkp
+      service: neurology_adult_general
+      presentation_format: full_hp
+    - id: brick_jk69xop39ewz
+      title: '"I can''t walk, and I can''t feel my legs!"'
+      resource_url: https://exchange.scholarrx.com/brick/jk69xop39ewz
+      service: neurology_adult_general
+      presentation_format: full_hp
+    - id: brick_vprnjlk05m6g
+      title: '"I''m feeling off balance."'
+      resource_url: https://exchange.scholarrx.com/brick/vprnjlk05m6g
+      service: neurology_adult_general
+      presentation_format: full_hp
+    - id: brick_d6qnok6k5zol
+      title: '"I have a tremor."'
+      resource_url: https://exchange.scholarrx.com/brick/d6qnok6k5zol
+      service: neurology_adult_general
+      presentation_format: full_hp
+    - id: brick_rydnwgj8521l
+      title: '"My vision is not right and my arm is tingling."'
+      resource_url: https://exchange.scholarrx.com/brick/rydnwgj8521l
+      service: neurology_adult_general
+      presentation_format: full_hp
+    - id: brick_ex0npy1zn7qw
+      title: “After a chemical exposure I’m confused and vomiting”
+      resource_url: https://exchange.scholarrx.com/brick/ex0npy1zn7qw
+      service: neurology_adult_general
+      presentation_format: full_hp
+    - id: brick_jry51pko5e31
+      title: '"I think I had a seizure!"'
+      resource_url: https://exchange.scholarrx.com/brick/jry51pko5e31
+      service: neurology_adult_general
+      presentation_format: full_hp
+    - id: brick_jry51qxrne31
+      title: 'Stroke codes: Acute stroke workup and management'
+      resource_url: https://exchange.scholarrx.com/brick/jry51qxrne31
+      service: neurology_adult_general
+      presentation_format: full_hp
+    - id: brick_m645gj465jq1
+      title: '"My lower back hurts and the pain shoots into my leg"'
+      resource_url: https://exchange.scholarrx.com/brick/m645gj465jq1
+      service: neurology_adult_general
+      presentation_format: full_hp
+    - id: brick_jk69xyw885ew
+      title: “My baby has stiffening spells at bedtime”
+      resource_url: https://exchange.scholarrx.com/brick/jk69xyw885ew
+      service: neurology_adult_general
+      presentation_format: full_hp
+    - id: brick_p2d9vgyqy9wq
+      title: Spasms and Subependymal Nodules
+      resource_url: https://exchange.scholarrx.com/brick/p2d9vgyqy9wq
+      service: neurology_adult_general
+      presentation_format: full_hp
+    resource_provider: scholarrx
+    required_cases: 1
+    materials:
+    - id: brick_w379r3q279jr
+      title: 'Neurology Clinical Skills: Practicing Oral Presentations'
+      resource_url: https://exchange.scholarrx.com/brick/w379r3q279jr
+      service: neurology_adult_general
+      presentation_format: full_hp
+    - id: brick_7625zpk029lz
+      title: Neurology Clinical Examination
+      resource_url: https://exchange.scholarrx.com/brick/7625zpk029lz
+      service: neurology_adult_general
+      presentation_format: full_hp
+    library_url: https://exchange.scholarrx.com/lists/vprnjrjq65m6
   internal_medicine:
     display_name: Internal Medicine
     cases:

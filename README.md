@@ -19,7 +19,7 @@ The setup script installs dependencies, creates a private `.env` only if one doe
 
 Configure `OPENAI_API_KEY` for transcription and evaluation. GPT-5.5 is the default evaluation model. The student portal does not require an access code. `PRESENTIQ_ACCESS_TOKEN` is private and used only for researcher Advanced Mode and REST API access. Advanced Mode can also use a researcher's own provider key.
 
-The public Teachable registration code is separate: students create an account at [Research Teaching](https://www.researchteaching.com/signup/) and enter `learningrocks` in **Sign-Up Code**. The portal includes the full instructions and assigned case links.
+Students first select their clerkship. Neurology uses the [ScholarRx Neurology Clinical Bricks Library](https://exchange.scholarrx.com/lists/vprnjrjq65m6), with 19 clinical cases and two guides. The hosted ARGOS app includes a reader for 18 openly licensed bricks; this Python prototype links to the source bricks. Other clerkships use [Research Teaching](https://www.researchteaching.com/signup/), with `learningrocks` entered in **Sign-Up Code**. Teachable instructions appear only for those clerkships.
 
 ## Repository layout
 

@@ -51,3 +51,10 @@ This repository runs independently from the ARGOS website. Deploying the live st
 Before a Python deployment, run the offline suite and perform a fictional end-to-end smoke test. Verify authentication, microphone capture over HTTPS, model access and the intended storage destination. Keep credentials in host secrets. Retain the previous application revision and settings for rollback.
 
 The production case links and survey URLs are mirrored into `configs/clerkships.yaml` from ARGOS's `lib/presentiq/clerkship-config.ts`. Update both when study assignments change. Do not invent missing study URLs.
+
+
+## Case resources
+
+Clerkship selection is the first student screen. Neurology uses the ScholarRx Neurology library, with 19 clinical cases and two guides. Other clerkships retain Teachable cases and signup instructions. The hosted ARGOS implementation has an attributed reader for 18 CC BY-SA bricks; the Python prototype opens source links. Three Standard-license bricks remain external. Reader practice responses do not update ScholarRx completion.
+
+New Neurology IDs use `brick_<publisher slug>`. Retired Teachable IDs remain in historical submissions and are not relabeled as brick completions. The hosted post-study survey unlocks after one completed Neurology clinical case, consistent with the source participation instructions; the other clerkships retain their three-case requirement. The two guides are educational resources, not recordable cases.
