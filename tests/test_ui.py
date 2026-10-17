@@ -107,8 +107,9 @@ class UITests(unittest.TestCase):
         self.assertNotIn("Create your Teachable account", content)
         links = [link.proto.url for link in app.get("link_button")]
         self.assertEqual(
-            sum(url.startswith("https://exchange.scholarrx.com/brick/") for url in links), 21
+            sum(url.startswith("https://exchange.scholarrx.com/brick/") for url in links), 20
         )
+        self.assertNotIn("https://exchange.scholarrx.com/brick/7625zpk029lz", links)
         self.assertEqual(len(app.session_state["clerkship_data"]["cases"]), 19)
         self.assertEqual(app.session_state["clerkship_data"]["required_cases"], 3)
         self.assertIn("Choose 3 different clinical bricks", "\n".join(m.value for m in app.info))

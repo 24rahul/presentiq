@@ -10,7 +10,7 @@ For manual setup, install `requirements.txt`, copy `.env.example` to `.env`, and
 ## Student workflow
 
 1. On the hosted ARGOS app, enter your study ID and Johns Hopkins email before selecting a clerkship. Use the same identity each visit to restore saved progress. The Python prototype starts with clerkship selection.
-2. For Neurology, choose a ScholarRx clinical brick. The hosted ARGOS app displays 18 openly licensed bricks in its reader; three open on ScholarRx. The Python prototype links to the source library.
+2. For Neurology, choose a ScholarRx clinical brick. The hosted ARGOS app displays 17 openly licensed bricks in its reader, including the presentation guide; three clinical bricks open on ScholarRx. The clinical examination guide is hidden from the student library. The Python prototype links to the selected source bricks.
 3. For the other clerkships, create an account at [Research Teaching](https://www.researchteaching.com/signup/), choose and confirm your password, and enter `learningrocks` in **Sign-Up Code**. Return to the case dashboard after signing up.
 4. Complete the pre-study survey, review a case, and record a presentation or upload audio up to 25 MB. The hosted app asks whether you completed a previously opened pre- or post-study survey, including when you return from the survey tab. Select **Yes, I completed it** to save self-reported completion, **Not yet** to keep it unconfirmed, or **Remind me later** to dismiss. Survey cards also offer completion and reset controls.
 5. Review the transcript, generate feedback, and download your report. If the study save fails, use **Retry saving to study**.

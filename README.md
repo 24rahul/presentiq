@@ -19,7 +19,7 @@ The setup script installs dependencies, creates a private `.env` only if one doe
 
 Configure `OPENAI_API_KEY` for transcription and evaluation. GPT-5.5 is the default evaluation model. The student portal does not require an access code. `PRESENTIQ_ACCESS_TOKEN` is private and used only for researcher Advanced Mode and REST API access. Advanced Mode can also use a researcher's own provider key.
 
-The hosted ARGOS app asks for study ID and Johns Hopkins email before clerkship selection, then restores saved survey and presentation progress using that identity. The Python prototype starts with clerkship selection and links to source cases. Neurology uses the [ScholarRx Neurology Clinical Bricks Library](https://exchange.scholarrx.com/lists/vprnjrjq65m6), with 19 clinical cases and two guides. The hosted app includes a reader for 18 openly licensed bricks. Other clerkships use [Research Teaching](https://www.researchteaching.com/signup/), with `learningrocks` entered in **Sign-Up Code**. Teachable instructions appear only for those clerkships.
+The hosted ARGOS app asks for study ID and Johns Hopkins email before clerkship selection, then restores saved survey and presentation progress using that identity. The Python prototype starts with clerkship selection and links to source cases. Neurology shows 19 clinical cases and the PresentIQ presentation guide from the [ScholarRx Neurology Clinical Bricks Library](https://exchange.scholarrx.com/lists/vprnjrjq65m6). The hosted app includes a reader for 17 displayed openly licensed bricks. Other clerkships use [Research Teaching](https://www.researchteaching.com/signup/), with `learningrocks` entered in **Sign-Up Code**. Teachable instructions appear only for those clerkships.
 
 ## Repository layout
 

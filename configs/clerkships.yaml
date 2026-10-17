@@ -128,11 +128,6 @@ clerkships:
       resource_url: https://exchange.scholarrx.com/brick/w379r3q279jr
       service: neurology_adult_general
       presentation_format: full_hp
-    - id: brick_7625zpk029lz
-      title: Neurology Clinical Examination
-      resource_url: https://exchange.scholarrx.com/brick/7625zpk029lz
-      service: neurology_adult_general
-      presentation_format: full_hp
     library_url: https://exchange.scholarrx.com/lists/vprnjrjq65m6
   internal_medicine:
     display_name: Internal Medicine
