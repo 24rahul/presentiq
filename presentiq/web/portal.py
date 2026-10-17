@@ -138,9 +138,11 @@ def render_dashboard(config):
     st.subheader(f"{clerkship.get('display_name', '')} — Student Dashboard")
 
     if clerkship.get("resource_provider") == "scholarrx":
+        required = clerkship.get("required_cases", len(clerkship.get("cases", [])))
         st.info(
             "Neurology uses the ScholarRx Neurology Clinical Bricks Library. "
-            "Choose at least one clinical brick for your presentation. "
+            f"Choose {required} different clinical bricks and submit one presentation for each. "
+            "Repeat attempts on the same brick count once. "
             "The hosted ARGOS version includes an integrated reader for openly licensed bricks."
         )
         for material in clerkship.get("materials", []):

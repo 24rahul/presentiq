@@ -110,6 +110,8 @@ class UITests(unittest.TestCase):
             sum(url.startswith("https://exchange.scholarrx.com/brick/") for url in links), 21
         )
         self.assertEqual(len(app.session_state["clerkship_data"]["cases"]), 19)
+        self.assertEqual(app.session_state["clerkship_data"]["required_cases"], 3)
+        self.assertIn("Choose 3 different clinical bricks", "\n".join(m.value for m in app.info))
         self.assertFalse(app.exception)
 
     def test_server_secrets_are_never_populated_or_changed(self):

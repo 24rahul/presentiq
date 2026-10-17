@@ -121,7 +121,7 @@ clerkships:
       service: neurology_adult_general
       presentation_format: full_hp
     resource_provider: scholarrx
-    required_cases: 1
+    required_cases: 3
     materials:
     - id: brick_w379r3q279jr
       title: 'Neurology Clinical Skills: Practicing Oral Presentations'

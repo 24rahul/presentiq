@@ -14,7 +14,7 @@ For manual setup, install `requirements.txt`, copy `.env.example` to `.env`, and
 3. For the other clerkships, create an account at [Research Teaching](https://www.researchteaching.com/signup/), choose and confirm your password, and enter `learningrocks` in **Sign-Up Code**. Return to the case dashboard after signing up.
 4. Complete the pre-study survey, review a case, and record a presentation or upload audio up to 25 MB. The hosted app requests study ID and email before the first recording.
 5. Review the transcript, generate feedback, and download your report. If the study save fails, use **Retry saving to study**.
-6. Complete the post-study survey after the required presentations. Neurology requires a minimum of one clinical case. Reading a guide or answering practice questions does not create a PresentIQ submission or update ScholarRx course credit.
+6. Complete the post-study survey after the required presentations. Neurology requires three presentations on three different clinical bricks; repeat attempts on one brick count once. Reading a guide or answering practice questions does not create a PresentIQ submission or update ScholarRx course credit.
 
 The student portal does not ask for a PresentIQ access code. GPT-5.5 is the default model. Study access allows 120 operations per minute and 20 simultaneous operations per process. Adjust the two usage settings in `.env` and restart to change them.
 
